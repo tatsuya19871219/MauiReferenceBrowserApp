@@ -13,4 +13,9 @@ public class SearchItem
     public int ID { get; set; }
 
     public string URL { get; set; }
+
+    public int COUNT_MAJOR { get; set; }
+
+    public int COUNT_MINOR { get; set; }
+
 }

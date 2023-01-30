@@ -1,30 +1,45 @@
-﻿using ReferenceBrowserApp.Data;
+﻿using CommunityToolkit.Maui.Views;
+using ReferenceBrowserApp.Data;
 using ReferenceBrowserApp.Models;
 
 namespace ReferenceBrowserApp;
 
 public partial class MainPage : ContentPage
 {
-	SearchItemDatabase _database; 
+	SearchItemDatabase _database;
 
-	public MainPage(SearchItemDatabase database)
+	Uri _baseUrl = new Uri("https://learn.microsoft.com/en-us/dotnet/maui/");
+
+	string _baseLocalPath;
+
+    public MainPage(SearchItemDatabase database)
 	{
 		InitializeComponent();
 
 		_database = database;
+
+		myWebView.Source = _baseUrl;
+
+		_baseLocalPath = _baseUrl.LocalPath;
+
 		//BindingContext = this;
 
 		//SwipeGestureRecognizer swipeGesture = new SwipeGestureRecognizer();
 
 		//_ = Initialize();
 
+		// Restore app state
+		PrimarySwitch.IsToggled = Preferences.Default.Get<bool>("Primary", false);
+
+		// for test
+		_database.ClearDatabaseAsync();
 	}
 
 	
-	async Task Initialize()
-	{
+	//async Task Initialize()
+	//{
 		
-	}
+	//}
 
 	
 
@@ -39,6 +54,8 @@ public partial class MainPage : ContentPage
 
 		myContentView.WidthRequest = width;
 		myContentView.HeightRequest = height * 0.9;
+
+		CurrentLocation.WidthRequest = width * 0.8;
     }
 
     async private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
@@ -62,32 +79,98 @@ public partial class MainPage : ContentPage
 
     }
 
-    private void myWebView_Navigated(object sender, WebNavigatedEventArgs e)
+    async private void myWebView_Navigated(object sender, WebNavigatedEventArgs e)
     {
 		if (e.Result == WebNavigationResult.Success)
 		{
-			// 
-			SearchItem item = new SearchItem();
-			item.URL= e.Url;
 
-			_ = _database.SaveItemAsync(item);
+			// if url doesn't indicate the dotnet directory or deeper, don't save
+			var url = new Uri(e.Url);
+
+			CurrentLocation.Text = e.Url;
+
+			if(!url.LocalPath.Contains(_baseLocalPath))
+			{
+				await Task.Delay(1000);
+
+				// return to base
+				myWebView.Source = _baseUrl.OriginalString;
+
+				return;
+			}
+
+			//HttpStyleUriParser parser = new HttpStyleUriParser(); how to use this?
+
+			
+
+            if(!await _database.HasItemByURLAsync(e.Url))
+			{
+				SearchItem item = new SearchItem();
+				item.URL= e.Url;
+
+				_ = _database.SaveItemAsync(item);
+
+			}
+			else
+			{
+				var item = await _database.GetItemByUrlAsync(e.Url);
+
+				// add count
+				if(PrimarySwitch.IsToggled)
+				{
+					item.COUNT_MAJOR++;
+				}
+				else
+				{
+					item.COUNT_MINOR++;
+				}
+
+				_ = _database.SaveItemAsync(item);
+			}
 
 		}
     }
 
-	protected override async void OnNavigatedTo(NavigatedToEventArgs args)
-	{
-		base.OnNavigatedTo(args);
-	}
+	//protected override async void OnNavigatedTo(NavigatedToEventArgs args)
+	//{
+	//	base.OnNavigatedTo(args);
+	//}
 
-	protected override async void OnNavigatedFrom(NavigatedFromEventArgs args)
-	{
-		base.OnNavigatedFrom(args);
-	}
+	//protected override async void OnNavigatedFrom(NavigatedFromEventArgs args)
+	//{
+	//	base.OnNavigatedFrom(args);
+	//}
 
-    protected override async void OnNavigatingFrom(NavigatingFromEventArgs args)
+ //   protected override async void OnNavigatingFrom(NavigatingFromEventArgs args)
+ //   {
+ //       base.OnNavigatingFrom(args);
+ //   }
+
+    private void Switch_Toggled(object sender, ToggledEventArgs e)
     {
-        base.OnNavigatingFrom(args);
+		// Store app state
+		Preferences.Default.Set("Primary", e.Value);
     }
+
+    private void Button_DeleteDatabase(object sender, EventArgs e)
+    {
+		var popup = new Popup
+		{
+			Content = new VerticalStackLayout
+			{
+				Children =
+				{
+					new Label
+					{
+						Text = "Delete"
+					}
+				}
+			}
+		};
+
+		this.ShowPopup(popup);
+    }
+
+	
 }
 

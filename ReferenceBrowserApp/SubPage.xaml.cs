@@ -14,7 +14,7 @@ public partial class SubPage : ContentPage
 
 	async void AutoPagePop()
 	{
-		int count = 10;
+		int count = 1;
 
 		while(count > 0)
 		{

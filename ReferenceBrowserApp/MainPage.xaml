@@ -5,6 +5,16 @@
 
     <VerticalStackLayout>
 
+        <HorizontalStackLayout x:Name="Header" Spacing="20" Margin="20, 0, 0, 0">
+            <Label x:Name="CurrentLocation" 
+                   Text="AAA"
+                   FontSize="18" VerticalOptions="Center"/>
+            <Label Text="Primary" 
+                   FontSize="18" VerticalOptions="Center"/>
+            <Switch x:Name="PrimarySwitch" 
+                    Toggled="Switch_Toggled"/>
+        </HorizontalStackLayout>
+
         <ContentView x:Name="myContentView" WidthRequest="300" HeightRequest="400">
 
             <!--<ContentView.GestureRecognizers>
@@ -16,9 +26,13 @@
                      Navigating="myWebView_Navigating"
                      Navigated="myWebView_Navigated"/>
         </ContentView>
-        
-        <Button Text="test" Clicked="Button_Clicked"/>
-        
+
+        <HorizontalStackLayout x:Name="Footer" Spacing="50" HorizontalOptions="Center">
+
+            <Button Text="Delete database" Clicked="Button_DeleteDatabase"/>
+            <Button Text="Check database" Clicked="Button_Clicked"/>
+        </HorizontalStackLayout>
+
     </VerticalStackLayout>
     
 </ContentPage>

@@ -33,6 +33,22 @@ public class SearchItemDatabase
         return await Database.Table<SearchItem>().ToListAsync();
     }
 
+    public async Task<bool> HasItemByURLAsync(string url)
+    {
+        var item = await GetItemByUrlAsync(url);
+
+        if(item is null) return false;
+        return true;
+
+    }
+
+    public async Task<SearchItem> GetItemByUrlAsync(string url)
+    {
+        await Init();
+
+        return await Database.Table<SearchItem>().Where(x => x.URL == url).FirstOrDefaultAsync();
+    }
+
     //
     public async Task<int> SaveItemAsync(SearchItem item)
     {
@@ -46,5 +62,13 @@ public class SearchItemDatabase
         {
             return await Database.InsertAsync(item);
         }
+    }
+
+    //
+    public async void ClearDatabaseAsync()
+    {
+        await Init();
+
+        await Database.DeleteAllAsync<SearchItem>();
     }
 }
