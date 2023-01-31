@@ -32,7 +32,7 @@ public partial class MainPage : ContentPage
 		PrimarySwitch.IsToggled = Preferences.Default.Get<bool>("Primary", false);
 
 		// for test
-		_database.ClearDatabaseAsync();
+		//_database.ClearDatabaseAsync();
 	}
 
 	
@@ -53,9 +53,9 @@ public partial class MainPage : ContentPage
         base.OnSizeAllocated(width, height);
 
 		myContentView.WidthRequest = width;
-		myContentView.HeightRequest = height * 0.9;
+		myContentView.HeightRequest = height - Header.Height - Footer.Height;
 
-		CurrentLocation.WidthRequest = width * 0.8;
+		CurrentLocation.WidthRequest = width * 0.6;
     }
 
     async private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
@@ -100,7 +100,6 @@ public partial class MainPage : ContentPage
 			}
 
 			//HttpStyleUriParser parser = new HttpStyleUriParser(); how to use this?
-
 			
 
             if(!await _database.HasItemByURLAsync(e.Url))
@@ -152,23 +151,27 @@ public partial class MainPage : ContentPage
 		Preferences.Default.Set("Primary", e.Value);
     }
 
-    private void Button_DeleteDatabase(object sender, EventArgs e)
+    private async void Button_DeleteDatabase(object sender, EventArgs e)
     {
-		var popup = new Popup
-		{
-			Content = new VerticalStackLayout
-			{
-				Children =
-				{
-					new Label
-					{
-						Text = "Delete"
-					}
-				}
-			}
-		};
+		//var popup = new Popup
+		//{
+		//	Content = new VerticalStackLayout
+		//	{
+		//		Children =
+		//		{
+		//			new Label
+		//			{
+		//				Text = "Delete"
+		//			}
+		//		}
+		//	}
+		//};
 
-		this.ShowPopup(popup);
+		//this.ShowPopup(popup);
+
+		bool answer = await DisplayAlert("WARNING", "Are you sure to DELETE the current local database?", "YES", "NO");
+
+		if (answer) _database.ClearDatabaseAsync();
     }
 
 	
