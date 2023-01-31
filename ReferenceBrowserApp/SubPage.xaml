@@ -2,11 +2,41 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReferenceBrowserApp.SubPage"
+             xmlns:models="clr-namespace:ReferenceBrowserApp.Models"
              Title="SubPage">
     <VerticalStackLayout>
-        <Label x:Name="myState"
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+        
+        <Grid RowDefinitions="*, Auto">
+
+            <CollectionView
+                VerticalOptions="Fill"
+                ItemsSource="{Binding Items}"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:SearchItem">
+                        <Grid ColumnDefinitions="*, Auto, *, *" Padding="20">
+
+                            <Label Text="{Binding ID}"
+                                   VerticalTextAlignment="Center"/>
+                            <Label Text="{Binding URL}"
+                                   Grid.Column="1"
+                                   VerticalTextAlignment="Center"/>
+
+                            <Label Text="{Binding COUNT_MAJOR}"
+                                   Grid.Column="2"
+                                   VerticalTextAlignment="Center"/>
+                            <Label Text="{Binding COUNT_MINOR}"
+                                   Grid.Column="3"
+                                   VerticalTextAlignment="Center"/>
+
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+
+            <Button Text="Sync with primary app" Grid.Row="1"/>
+
+        </Grid>
     </VerticalStackLayout>
 </ContentPage>

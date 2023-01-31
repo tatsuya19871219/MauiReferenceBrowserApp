@@ -1,42 +1,35 @@
 using ReferenceBrowserApp.Data;
+using ReferenceBrowserApp.Models;
+using System.Collections.ObjectModel;
 
 namespace ReferenceBrowserApp;
 
 public partial class SubPage : ContentPage
 {
+	public ObservableCollection<SearchItem> Items { get; set; } = new();
 
-	public SubPage()
+	public SubPage(SearchItemDatabase database)
 	{
 		InitializeComponent();
 
-		AutoPagePop();
-	}
+		BindingContext= this;
 
-	async void AutoPagePop()
-	{
-		int count = 1;
-
-		while(count > 0)
-		{
-			myState.Text = count.ToString();
-			myState.FontSize = 24;
-
-			await Task.Delay(1000);
-
-			count--;
-		}
-		await Navigation.PopAsync();
-	}
-
-	public void SetCurrentDatabase(SearchItemDatabase database)
-	{
 		ProcessDatabase(database);
+		
 	}
 
 	async void ProcessDatabase(SearchItemDatabase database)
 	{
-		var items = await database.GetItemsAsync();
+        var items = await database.GetItemsAsync();
 
+		//Items = new ObservableCollection<SearchItem>(items); // NG
 
-	}
+		MainThread.BeginInvokeOnMainThread(() =>
+		{
+			Items.Clear();
+			foreach (var item in items)
+				Items.Add(item);
+		});
+    }
+
 }

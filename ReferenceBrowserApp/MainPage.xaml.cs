@@ -58,20 +58,22 @@ public partial class MainPage : ContentPage
 		CurrentLocation.WidthRequest = width * 0.6;
     }
 
-    async private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
-    {
-        //Page page = (Page)Activator.CreateInstance(typeof(SubPage));
-        SubPage page = (SubPage)Activator.CreateInstance(typeof(SubPage));
-        await Navigation.PushAsync(page);
-    }
+    //async private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
+    //{
+    //    //Page page = (Page)Activator.CreateInstance(typeof(SubPage));
+    //    SubPage page = (SubPage)Activator.CreateInstance(typeof(SubPage));
+    //    await Navigation.PushAsync(page);
+    //}
 
 	async void MoveToSubPage()
 	{
-        SubPage page = (SubPage)Activator.CreateInstance(typeof(SubPage));
+		//SubPage page = (SubPage)Activator.CreateInstance(typeof(SubPage));
 
-		page.SetCurrentDatabase(_database);
+		//page.SetCurrentDatabase(_database);
 
-        await Navigation.PushAsync(page);
+		//await Navigation.PushAsync(page);
+
+		await Shell.Current.GoToAsync(nameof(SubPage));
     }
 
     private void myWebView_Navigating(object sender, WebNavigatingEventArgs e)
