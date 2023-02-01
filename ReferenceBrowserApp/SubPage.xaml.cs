@@ -22,24 +22,24 @@ public partial class SubPage : ContentPage
 		
 	}
 
-	async void ProcessDatabase()
-	{
-        var items = await _database.GetItemsAsync();
+	//async void ProcessDatabase()
+	//{
+ //       var items = await _database.GetItemsAsync();
 
-		//Items = new ObservableCollection<SearchItem>(items); // NG
+	//	//Items = new ObservableCollection<SearchItem>(items); // NG
 
-		MainThread.BeginInvokeOnMainThread(() =>
-		{
-			Items.Clear();
-			foreach (var item in items)
-				Items.Add(item);
-		});
-    }
+	//	MainThread.BeginInvokeOnMainThread(() =>
+	//	{
+	//		Items.Clear();
+	//		foreach (var item in items)
+	//			Items.Add(item);
+	//	});
+ //   }
 
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
 
-		ProcessDatabase();
+		//ProcessDatabase();
     }
 }

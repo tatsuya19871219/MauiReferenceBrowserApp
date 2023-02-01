@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
 using ReferenceBrowserApp.Data;
 using ReferenceBrowserApp.Models;
 
@@ -6,9 +7,12 @@ namespace ReferenceBrowserApp;
 
 public partial class MainPage : ContentPage
 {
+
+	public string CurrentLocation { get; private set; }
+	
 	SearchItemDatabase _database;
 
-	Uri _baseUrl = new Uri("https://learn.microsoft.com/en-us/dotnet/maui/");
+	Uri _baseUrl = new Uri("https://learn.microsoft.com/en-us/dotnet/maui/?view=net-maui-7.0");
 
 	string _baseLocalPath;
 
@@ -16,32 +20,28 @@ public partial class MainPage : ContentPage
 	{
 		InitializeComponent();
 
+		
 		_database = database;
 
-		myWebView.Source = _baseUrl;
+		BindingContext = this;
+
+		CurrentLocation = _baseUrl.OriginalString;
 
 		_baseLocalPath = _baseUrl.LocalPath;
 
-		//BindingContext = this;
-
 		//SwipeGestureRecognizer swipeGesture = new SwipeGestureRecognizer();
 
-		//_ = Initialize();
 
 		// Restore app state
 		PrimarySwitch.IsToggled = Preferences.Default.Get<bool>("Primary", false);
 
-		// for test
-		//_database.ClearDatabaseAsync();
-	}
 
-	
-	//async Task Initialize()
-	//{
-		
-	//}
+        myURL.SetBinding(Label.TextProperty, new Binding(nameof(CurrentLocation)));
 
-	
+		myWebView.Source = CurrentLocation;
+
+    }
+
 
     private void Button_Clicked(object sender, EventArgs e)
     {
@@ -55,7 +55,6 @@ public partial class MainPage : ContentPage
 		myContentView.WidthRequest = width;
 		myContentView.HeightRequest = height - Header.Height - Footer.Height;
 
-		//CurrentLocation.WidthRequest = width * 0.9;
     }
 
     //async private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
@@ -65,16 +64,8 @@ public partial class MainPage : ContentPage
     //    await Navigation.PushAsync(page);
     //}
 
-	async void MoveToSubPage()
-	{
-		//SubPage page = (SubPage)Activator.CreateInstance(typeof(SubPage));
-
-		//page.SetCurrentDatabase(_database);
-
-		//await Navigation.PushAsync(page);
-
-		await Shell.Current.GoToAsync(nameof(SubPage));
-    }
+	async void MoveToSubPage() 
+		=> await Shell.Current.GoToAsync(nameof(SubPage));
 
     private void myWebView_Navigating(object sender, WebNavigatingEventArgs e)
     {
@@ -89,9 +80,13 @@ public partial class MainPage : ContentPage
 			// if url doesn't indicate the dotnet directory or deeper, don't save
 			var url = new Uri(e.Url);
 
-			CurrentLocation.Text = e.Url;
+			CurrentLocation = e.Url;
 
-			if(!url.LocalPath.Contains(_baseLocalPath))
+			if (e.Url.Equals(_baseUrl))
+			{
+				return;
+			}
+			else if(!url.LocalPath.Contains(_baseLocalPath))
 			{
 				await Task.Delay(1000);
 
@@ -106,47 +101,17 @@ public partial class MainPage : ContentPage
 
             if(!await _database.HasItemByURLAsync(e.Url))
 			{
-				SearchItem item = new SearchItem();
-				item.URL= e.Url;
-		
-
-				_ = _database.SaveItemAsync(item);
-
+				_database.AddNewItemAsync(e.Url);
 			}
 			else
 			{
-				var item = await _database.GetItemByUrlAsync(e.Url);
-
-				// add count
-				if(PrimarySwitch.IsToggled)
-				{
-					item.COUNT_MAJOR++;
-				}
-				else
-				{
-					item.COUNT_MINOR++;
-				}
-
-				_ = _database.SaveItemAsync(item);
+				_database.UpdateItemAsync(e.Url);
 			}
 
 		}
     }
 
-	//protected override async void OnNavigatedTo(NavigatedToEventArgs args)
-	//{
-	//	base.OnNavigatedTo(args);
-	//}
 
-	//protected override async void OnNavigatedFrom(NavigatedFromEventArgs args)
-	//{
-	//	base.OnNavigatedFrom(args);
-	//}
-
- //   protected override async void OnNavigatingFrom(NavigatingFromEventArgs args)
- //   {
- //       base.OnNavigatingFrom(args);
- //   }
 
     private void Switch_Toggled(object sender, ToggledEventArgs e)
     {
@@ -156,21 +121,6 @@ public partial class MainPage : ContentPage
 
     private async void Button_DeleteDatabase(object sender, EventArgs e)
     {
-		//var popup = new Popup
-		//{
-		//	Content = new VerticalStackLayout
-		//	{
-		//		Children =
-		//		{
-		//			new Label
-		//			{
-		//				Text = "Delete"
-		//			}
-		//		}
-		//	}
-		//};
-
-		//this.ShowPopup(popup);
 
 		bool answer = await DisplayAlert("WARNING", "Are you sure to DELETE the current local database?", "YES", "NO");
 

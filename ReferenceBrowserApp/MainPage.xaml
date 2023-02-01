@@ -11,7 +11,7 @@
     <VerticalStackLayout>
 
         <Grid x:Name="Header">
-            <Label x:Name="CurrentLocation" 
+            <Label x:Name="myURL" 
                    Text="URL here"
                    FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>
             <HorizontalStackLayout HorizontalOptions="End" Spacing="20">
@@ -29,7 +29,7 @@
             </ContentView.GestureRecognizers>-->
 
             <WebView x:Name="myWebView" 
-                     Source="https://learn.microsoft.com/en-us/dotnet/maui/?view=net-maui-7.0"
+                     Source=""
                      Navigating="myWebView_Navigating"
                      Navigated="myWebView_Navigated"/>
         </ContentView>
