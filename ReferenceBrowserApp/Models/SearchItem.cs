@@ -18,4 +18,9 @@ public class SearchItem
 
     public int COUNT_MINOR { get; set; }
 
+    public SearchItem() 
+    {
+        COUNT_MINOR = 1;
+    }
+
 }

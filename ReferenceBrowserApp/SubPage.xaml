@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReferenceBrowserApp.SubPage"
              xmlns:models="clr-namespace:ReferenceBrowserApp.Models"
-             Title="SubPage">
+             Title="SubPage"
+             Shell.NavBarIsVisible="False">
     <VerticalStackLayout>
         
         <Grid RowDefinitions="*, Auto">
@@ -14,7 +15,7 @@
                 SelectionMode="None">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:SearchItem">
-                        <Grid ColumnDefinitions="*, Auto, *, *" Padding="20">
+                        <Grid ColumnDefinitions="20, Auto, 20, 20" Padding="20">
 
                             <Label Text="{Binding ID}"
                                    VerticalTextAlignment="Center"/>
@@ -24,6 +25,7 @@
 
                             <Label Text="{Binding COUNT_MAJOR}"
                                    Grid.Column="2"
+                                   FontAttributes="Bold"
                                    VerticalTextAlignment="Center"/>
                             <Label Text="{Binding COUNT_MINOR}"
                                    Grid.Column="3"

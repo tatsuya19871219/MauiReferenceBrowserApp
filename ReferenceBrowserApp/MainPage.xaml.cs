@@ -55,7 +55,7 @@ public partial class MainPage : ContentPage
 		myContentView.WidthRequest = width;
 		myContentView.HeightRequest = height - Header.Height - Footer.Height;
 
-		CurrentLocation.WidthRequest = width * 0.6;
+		//CurrentLocation.WidthRequest = width * 0.9;
     }
 
     //async private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
@@ -108,6 +108,7 @@ public partial class MainPage : ContentPage
 			{
 				SearchItem item = new SearchItem();
 				item.URL= e.Url;
+		
 
 				_ = _database.SaveItemAsync(item);
 

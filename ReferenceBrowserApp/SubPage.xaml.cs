@@ -6,6 +6,9 @@ namespace ReferenceBrowserApp;
 
 public partial class SubPage : ContentPage
 {
+
+	SearchItemDatabase _database;
+
 	public ObservableCollection<SearchItem> Items { get; set; } = new();
 
 	public SubPage(SearchItemDatabase database)
@@ -14,13 +17,14 @@ public partial class SubPage : ContentPage
 
 		BindingContext= this;
 
-		ProcessDatabase(database);
+		_database = database;
+		//ProcessDatabase(database);
 		
 	}
 
-	async void ProcessDatabase(SearchItemDatabase database)
+	async void ProcessDatabase()
 	{
-        var items = await database.GetItemsAsync();
+        var items = await _database.GetItemsAsync();
 
 		//Items = new ObservableCollection<SearchItem>(items); // NG
 
@@ -32,4 +36,10 @@ public partial class SubPage : ContentPage
 		});
     }
 
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
+
+		ProcessDatabase();
+    }
 }
