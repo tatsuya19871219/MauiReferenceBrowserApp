@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using ReferenceBrowserApp.Data;
+using ReferenceBrowserApp.ViewModels;
 
 namespace ReferenceBrowserApp;
 
@@ -27,6 +28,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<SubPage>();
 
 		builder.Services.AddSingleton<SearchItemDatabase>();
+		builder.Services.AddSingleton<SearchItemInfosViewModel>();
 
 		return builder.Build();
 	}

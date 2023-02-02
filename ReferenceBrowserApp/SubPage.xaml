@@ -3,42 +3,46 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReferenceBrowserApp.SubPage"
              xmlns:models="clr-namespace:ReferenceBrowserApp.Models"
+             xmlns:custom="clr-namespace:ReferenceBrowserApp.CustomViews"
              Title="SubPage"
              Shell.NavBarIsVisible="False">
-    <VerticalStackLayout>
-        
-        <Grid RowDefinitions="*, Auto">
-
-            <CollectionView
-                VerticalOptions="Fill"
-                ItemsSource="{Binding Items}"
-                SelectionMode="None">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:SearchItem">
-                        <Grid ColumnDefinitions="20, Auto, 20, 20" Padding="20">
-
-                            <Label Text="{Binding ID}"
-                                   VerticalTextAlignment="Center"/>
-                            <Label Text="{Binding URL}"
-                                   Grid.Column="1"
-                                   VerticalTextAlignment="Center"/>
-
-                            <Label Text="{Binding COUNT_MAJOR}"
-                                   Grid.Column="2"
-                                   FontAttributes="Bold"
-                                   VerticalTextAlignment="Center"/>
-                            <Label Text="{Binding COUNT_MINOR}"
-                                   Grid.Column="3"
-                                   VerticalTextAlignment="Center"/>
-
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
 
 
-            <Button Text="Sync with primary app" Grid.Row="1"/>
+    <VerticalStackLayout HorizontalOptions="Center"
+                         Spacing="30">
 
-        </Grid>
+
+        <HorizontalStackLayout HorizontalOptions="End" Spacing="20">
+            <Label Text="Primary" 
+                   FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>
+            <Switch x:Name="PrimarySwitch" 
+                    Toggled="Switch_Toggled"/>
+            
+            <Button Text="Sync"/>
+            
+        </HorizontalStackLayout>
+
+
+        <ListView x:Name="itemListView" 
+                  ItemsSource="{Binding SearchItemInfos}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <custom:SearchItemInfoView/>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+                
+        <HorizontalStackLayout>
+            <Button Text="Delete database" Clicked="Button_DeleteDatabase"/>
+        </HorizontalStackLayout>
+
+
+
+
     </VerticalStackLayout>
+
+
+
 </ContentPage>

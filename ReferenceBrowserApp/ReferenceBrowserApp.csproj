@@ -62,19 +62,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="CustomViews\SearchItemInfoView.xaml.cs">
+	    <DependentUpon>SearchItemInfoView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="SubPage.xaml.cs">
 	    <DependentUpon>SubPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="CustomViews\SearchItemInfoView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="SubPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="ViewModels\" />
 	  <Folder Include="Services\" />
 	</ItemGroup>
 

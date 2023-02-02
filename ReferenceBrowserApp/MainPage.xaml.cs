@@ -8,7 +8,16 @@ namespace ReferenceBrowserApp;
 public partial class MainPage : ContentPage
 {
 
-	public string CurrentLocation { get; private set; }
+	string _currentLocation;
+
+	public string CurrentLocation {
+		get => _currentLocation;
+		private set
+		{
+			_currentLocation = value;
+			myURL.Text = _currentLocation;
+		} 
+	}
 	
 	SearchItemDatabase _database;
 
@@ -31,16 +40,22 @@ public partial class MainPage : ContentPage
 
 		//SwipeGestureRecognizer swipeGesture = new SwipeGestureRecognizer();
 
-
-		// Restore app state
-		PrimarySwitch.IsToggled = Preferences.Default.Get<bool>("Primary", false);
-
-
-        myURL.SetBinding(Label.TextProperty, new Binding(nameof(CurrentLocation)));
-
 		myWebView.Source = CurrentLocation;
 
+		// prepare to access database
+		PrepareDatabaseAccess();
     }
+
+	async void PrepareDatabaseAccess()
+	{
+		while (true)
+		{
+			if (_database.IsInitialized) break;
+			await Task.Delay(100);
+		}
+
+		checkButton.IsEnabled = true;
+	}
 
 
     private void Button_Clicked(object sender, EventArgs e)
@@ -65,12 +80,7 @@ public partial class MainPage : ContentPage
     //}
 
 	async void MoveToSubPage() 
-		=> await Shell.Current.GoToAsync(nameof(SubPage));
-
-    private void myWebView_Navigating(object sender, WebNavigatingEventArgs e)
-    {
-
-    }
+		=> await Shell.Current.GoToAsync(nameof(SubPage)); 
 
     async private void myWebView_Navigated(object sender, WebNavigatedEventArgs e)
     {
@@ -78,11 +88,15 @@ public partial class MainPage : ContentPage
 		{
 
 			// if url doesn't indicate the dotnet directory or deeper, don't save
-			var url = new Uri(e.Url);
 
 			CurrentLocation = e.Url;
 
-			if (e.Url.Equals(_baseUrl))
+            // analyse url
+            var url = new Uri(e.Url);
+
+			// query check including redirection on mobile 
+
+            if (e.Url.Equals(_baseUrl.OriginalString))
 			{
 				return;
 			}
@@ -91,7 +105,7 @@ public partial class MainPage : ContentPage
 				await Task.Delay(1000);
 
 				// return to base
-				myWebView.Source = _baseUrl.OriginalString;
+				myWebView.Source = CurrentLocation = _baseUrl.OriginalString;
 
 				return;
 			}
@@ -110,23 +124,6 @@ public partial class MainPage : ContentPage
 
 		}
     }
-
-
-
-    private void Switch_Toggled(object sender, ToggledEventArgs e)
-    {
-		// Store app state
-		Preferences.Default.Set("Primary", e.Value);
-    }
-
-    private async void Button_DeleteDatabase(object sender, EventArgs e)
-    {
-
-		bool answer = await DisplayAlert("WARNING", "Are you sure to DELETE the current local database?", "YES", "NO");
-
-		if (answer) _database.ClearDatabaseAsync();
-    }
-
 	
 }
 

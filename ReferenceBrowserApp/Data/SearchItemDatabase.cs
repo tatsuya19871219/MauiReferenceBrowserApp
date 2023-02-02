@@ -12,14 +12,21 @@ public class SearchItemDatabase
 {
     SQLiteAsyncConnection Database;
 
-    public List<SearchItem> SearchItems { get; private set; } = new();
+    List<SearchItem> _searchItems = new();
 
     // for store search index
     Dictionary<int, int> _searchIndexByID = new(); // mapping ID to List index
     Dictionary<string, int> _searchIndexByUrl = new(); // mapping Url to List index
 
+    // for notifing database update
+    public Action<List<SearchItem>> Updated;
+
+    //
+    public bool IsInitialized = false;
+
     public SearchItemDatabase()
     {
+        Init();
     }
 
     async Task Init()
@@ -38,22 +45,25 @@ public class SearchItemDatabase
             int index = 0;
             foreach(var item in items)
             {
-                SearchItems.Add(item);
+                _searchItems.Add(item);
 
                 _searchIndexByID[item.ID] = index;
                 _searchIndexByUrl[item.URL] = index++;
             }
+
+            IsInitialized = true;
+            //Updated?.Invoke(_searchItems);
         }
 
     }
 
-    //
-    //public async Task<List<SearchItem>> GetItemsAsync()
-    //{
-    //    await Init();
 
-    //    return await Database.Table<SearchItem>().ToListAsync();
-    //}
+    public async Task<List<SearchItem>> GetItemsAsync()
+    {
+        await Init();
+
+        return _searchItems;
+    }
 
     public async Task<bool> HasItemByURLAsync(string url)
     {
@@ -64,10 +74,6 @@ public class SearchItemDatabase
 
     }
 
-    public bool HasItemByURL(string url)
-    {
-        return _searchIndexByUrl.TryGetValue(url, out _);
-    }
 
     public async Task<SearchItem> GetItemByUrlAsync(string url)
     {
@@ -75,31 +81,6 @@ public class SearchItemDatabase
 
         return await Database.Table<SearchItem>().Where(x => x.URL == url).FirstOrDefaultAsync();
     }
-
-    //
-    //public async void SaveItemAsync(SearchItem item)
-    //{
-    //    await Init();
-
-    //    if (item.ID != 0)
-    //    {
-    //        SearchItems[_searchIndexByID[item.ID]] = item;
-
-    //        await Database.UpdateAsync(item);
-    //    }
-    //    else
-    //    {
-    //        SearchItems.Add(item);
-    //        await Database.InsertAsync(item);
-            
-    //        //// check new item ID 
-    //        //int id = (await GetItemByUrlAsync(item.URL)).ID;
-
-    //        // item.ID is updated in InsertAsync call.
-
-    //        _searchIndexByID[item.ID] = _searchIndexByID.Count;
-    //    }
-    //}
 
 
     //
@@ -110,11 +91,13 @@ public class SearchItemDatabase
         SearchItem item = new SearchItem();
         item.URL = url;
 
-        SearchItems.Add(item);
+        _searchItems.Add(item);
         await Database.InsertAsync(item);
 
         _searchIndexByID[item.ID] = _searchIndexByID.Count;
         _searchIndexByUrl[item.URL] = _searchIndexByUrl.Count;
+
+        Updated?.Invoke(_searchItems);
     }
 
     //
@@ -122,10 +105,12 @@ public class SearchItemDatabase
     {
         await Init();
 
-        var item = SearchItems[_searchIndexByUrl[url]];
+        var item = _searchItems[_searchIndexByUrl[url]];
         item.COUNT_MINOR++;
 
         await Database.UpdateAsync(item);
+
+        Updated?.Invoke(_searchItems);
     }
 
     //
@@ -135,6 +120,12 @@ public class SearchItemDatabase
 
         await Database.DeleteAllAsync<SearchItem>();
 
-        SearchItems.Clear();
+        _searchItems.Clear();
+        _searchIndexByID.Clear();
+        _searchIndexByUrl.Clear();
+
+        Updated?.Invoke(_searchItems);
     }
+
+
 }
