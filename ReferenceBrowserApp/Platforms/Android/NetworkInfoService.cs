@@ -7,6 +7,7 @@ using Microsoft.VisualBasic;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+//using System.Net.NetworkInformation;
 //using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,19 +22,14 @@ public partial class NetworkInfoService
 
     public partial void Invoke()
     {
-        //var ipAddresses = Dns.GetHostAddresses(Dns.GetHostName());
-        //foreach (var ipAddress in ipAddresses)
-        //{
-        //    Debug.Print($"{ipAddress.ToString()}");
-        //}
 
-        var AllNetworkInterfaces = Collections.List(Java.Net.NetworkInterface.NetworkInterfaces);
+        var AllNetworkInterfaces = Collections.List(NetworkInterface.NetworkInterfaces);
 
-        foreach (var Interface in AllNetworkInterfaces)
+        foreach (NetworkInterface Interface in AllNetworkInterfaces)
         {
             Debug.WriteLine(Interface.ToString());
 
-            var AddressInterface = (Interface as Java.Net.NetworkInterface).InterfaceAddresses;
+            var AddressInterface = Interface.InterfaceAddresses;
 
             foreach (var AInterface in AddressInterface)
             {
@@ -51,6 +47,9 @@ public partial class NetworkInfoService
 
         MyIPAddress = _ipAddress.HostAddress;
 
-        GatewayIP = MyIPAddress;
+        GatewayIP = _broadcast.HostAddress.ToString().Split('.')
+                                            .Select(p => p == "255" ? "1" : p)
+                                            .ToList()
+                                            .Aggregate((text, next) => text + "." + next);
     }
 }

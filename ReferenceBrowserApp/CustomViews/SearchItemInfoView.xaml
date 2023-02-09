@@ -24,5 +24,10 @@
                FontSize="12"
                TextColor="Gray"/>
 
+        <Label Text="{Binding URI}"
+               HorizontalOptions="Start"
+               FontSize="10"
+               TextColor="LightGreen"/>
+
     </VerticalStackLayout>
 </ContentView>

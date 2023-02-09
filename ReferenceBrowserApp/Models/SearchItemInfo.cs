@@ -25,6 +25,8 @@ public partial class SearchItemInfo : ObservableObject
 
     public string Details { get; private set; }
 
+    public string URI { get; private set; }
+
     public SearchItemInfo(SearchItem item)
     {
         Item = item;
@@ -34,6 +36,8 @@ public partial class SearchItemInfo : ObservableObject
         //MajorCount = item.COUNT_MAJOR;
 
         var uri = new Uri(item.URL);
+
+        URI = uri.ToString();
 
         string[] segments = uri.Segments;
 

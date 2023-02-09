@@ -53,7 +53,9 @@ public partial class NetworkInfoService
 
                 Debug.Print("IP address: {0}", string.Join(", ", ipNum));
 
-                if (gatewayNum[2] == ipNum[2]) _ipAddress = address;
+                int j = gatewayNum.FindIndex(p => p == 1);
+
+                if (gatewayNum[j-1] == ipNum[j-1]) _ipAddress = address;
 
             }
             catch

@@ -40,7 +40,14 @@ public partial class SubPage : ContentPage
 
         UpdateServerIPEntry();
 
+        //SwipeGestureRecognizer swipeGestureRecognizer = new SwipeGestureRecognizer();
+        //swipeGestureRecognizer.Swiped += SwipeGestureRecognizer_Swiped;
+        
+        //swipeGestureRecognizer.Direction = SwipeDirection.Up;
+
+        //SearchItemScrollView.GestureRecognizers.Add(swipeGestureRecognizer);
     }
+
 
     async protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
@@ -123,6 +130,11 @@ public partial class SubPage : ContentPage
             ServerIP.Text = _networkInfoService?.GatewayIP.ToString();
             ServerIP.IsEnabled = true;
         }
+    }
+
+    private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
+    {
+        //(sender as ScrollView)?.
     }
 }
 

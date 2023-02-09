@@ -8,19 +8,16 @@
         <x:Double x:Key="InfoFontSize">16</x:Double>
     </ContentPage.Resources>
 
+    
+    
     <VerticalStackLayout>
 
         <Grid x:Name="Header">
+            
+            
             <Label x:Name="myURL" 
                    Text="URL here"
                    FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>
-            <!--
-            <HorizontalStackLayout HorizontalOptions="End" Spacing="20">
-                <Label Text="Primary" 
-                   FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>
-            <Switch x:Name="PrimarySwitch" 
-                    Toggled="Switch_Toggled"/>
-            </HorizontalStackLayout>-->
         </Grid>
 
         <ContentView x:Name="myContentView" WidthRequest="300" HeightRequest="400">
@@ -28,11 +25,19 @@
             <!--<ContentView.GestureRecognizers>
                 <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped"/>
             </ContentView.GestureRecognizers>-->
+            
 
             <WebView x:Name="myWebView" 
                      Source=""
                      Navigated="myWebView_Navigated"
-                     Navigating="myWebView_Navigating" />
+                     Navigating="myWebView_Navigating">
+
+                <WebView.GestureRecognizers>
+                    <SwipeGestureRecognizer Direction="Left" Swiped="SwipeGestureRecognizer_Swiped"/>
+                </WebView.GestureRecognizers>
+
+
+            </WebView>
             
         </ContentView>
 

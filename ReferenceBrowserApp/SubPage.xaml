@@ -18,7 +18,14 @@
 
     <Grid HorizontalOptions="Center">
 
-        <ScrollView Margin="50">
+        
+        
+        <ScrollView x:Name="SearchItemScrollView" Margin="50">
+            
+            <!--<ScrollView.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Up"  Swiped="SwipeGestureRecognizer_Swiped"/>
+            </ScrollView.GestureRecognizers>-->
+            
             <FlexLayout Wrap="Wrap"
                         JustifyContent="SpaceAround"
                         BindableLayout.ItemsSource="{Binding SearchItemInfos}">

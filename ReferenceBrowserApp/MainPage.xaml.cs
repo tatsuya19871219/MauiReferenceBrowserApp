@@ -73,12 +73,12 @@ public partial class MainPage : ContentPage
 
     }
 
-    //async private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
-    //{
-    //    //Page page = (Page)Activator.CreateInstance(typeof(SubPage));
-    //    SubPage page = (SubPage)Activator.CreateInstance(typeof(SubPage));
-    //    await Navigation.PushAsync(page);
-    //}
+	async private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
+	{
+		//Page page = (Page)Activator.CreateInstance(typeof(SubPage));
+		//SubPage page = (SubPage)Activator.CreateInstance(typeof(SubPage));
+		//await Navigation.PushAsync(page);
+	}
 
 	async void MoveToSubPage() 
 		=> await Shell.Current.GoToAsync(nameof(SubPage)); 
