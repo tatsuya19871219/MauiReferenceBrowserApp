@@ -29,6 +29,7 @@ public partial class MainPage : ContentPage
 	{
 		InitializeComponent();
 
+		Application.Current.UserAppTheme = AppTheme.Dark;
 		
 		_database = database;
 
@@ -124,6 +125,10 @@ public partial class MainPage : ContentPage
 
 		}
     }
-	
+
+    private void myWebView_Navigating(object sender, WebNavigatingEventArgs e)
+    {
+		//e.Cancel= true;
+    }
 }
 

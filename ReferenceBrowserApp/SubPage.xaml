@@ -7,23 +7,35 @@
              Title="SubPage"
              Shell.NavBarIsVisible="False">
 
+    <!-- Using multiple rows/columns in grid, causes scroll view doesn't scroll -->
 
-    <VerticalStackLayout HorizontalOptions="Center"
-                         Spacing="30">
+    <Grid HorizontalOptions="Center">
 
+        <ScrollView Margin="50">
+            <FlexLayout Wrap="Wrap"
+                        JustifyContent="SpaceAround"
+                        BindableLayout.ItemsSource="{Binding SearchItemInfos}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <!--<ViewCell>-->
+                            <custom:SearchItemInfoView BindingContext="{Binding}" 
+                                                       HeightRequest="100"
+                                                       WidthRequest="200"/> <!-- Should asign height/width -->
+                        <!--</ViewCell>-->
+                        <!--<Label Text="{Binding PageName}" 
+                               FontSize="16"
+                               HeightRequest="50"
+                               WidthRequest="200"/>-->
+                        <!--<Label Text="{Binding DirectoryName}" 
+                               FontSize="16"
+                               HeightRequest="50"
+                               WidthRequest="200"/>-->
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </FlexLayout>
+        </ScrollView>
 
-        <HorizontalStackLayout HorizontalOptions="End" Spacing="20">
-            <Label Text="Primary" 
-                   FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>
-            <Switch x:Name="PrimarySwitch" 
-                    Toggled="Switch_Toggled"/>
-            
-            <Button Text="Sync"/>
-            
-        </HorizontalStackLayout>
-
-
-        <ListView x:Name="itemListView" 
+        <!--<ListView x:Name="itemListView" 
                   ItemsSource="{Binding SearchItemInfos}">
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -32,16 +44,28 @@
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
-        </ListView>
-                
-        <HorizontalStackLayout>
+        </ListView>-->
+
+        <HorizontalStackLayout HorizontalOptions="End"  VerticalOptions="Start"
+                               Spacing="20"
+                               HeightRequest="50">
+            <Label Text="Primary" 
+                   FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>
+            <Switch x:Name="PrimarySwitch" 
+                    Toggled="Switch_Toggled"/>
+
+            <Button Text="Sync"/>
+
+        </HorizontalStackLayout>
+
+        <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="End">
             <Button Text="Delete database" Clicked="Button_DeleteDatabase"/>
         </HorizontalStackLayout>
 
 
 
 
-    </VerticalStackLayout>
+    </Grid>
 
 
 

@@ -55,6 +55,6 @@ public partial class SubPage : ContentPage
     {
         base.OnSizeAllocated(width, height);
 
-        itemListView.HeightRequest = height*0.8;
+        //itemListView.HeightRequest = height*0.8;
     }
 }

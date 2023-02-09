@@ -31,7 +31,8 @@
 
             <WebView x:Name="myWebView" 
                      Source=""
-                     Navigated="myWebView_Navigated"/>
+                     Navigated="myWebView_Navigated"
+                     Navigating="myWebView_Navigating" />
             
         </ContentView>
 
