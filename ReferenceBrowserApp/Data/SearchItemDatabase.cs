@@ -51,10 +51,14 @@ public class SearchItemDatabase
                 _searchIndexByUrl[item.URL] = index++;
             }
 
-            IsInitialized = true;
             //Updated?.Invoke(_searchItems);
         }
+        else
+        {
+            // just created
+        }
 
+        IsInitialized = true;
     }
 
 

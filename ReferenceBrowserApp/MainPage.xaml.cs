@@ -29,7 +29,7 @@ public partial class MainPage : ContentPage
 	{
 		InitializeComponent();
 
-		Application.Current.UserAppTheme = AppTheme.Dark;
+		//Application.Current.UserAppTheme = AppTheme.Dark;
 		
 		_database = database;
 

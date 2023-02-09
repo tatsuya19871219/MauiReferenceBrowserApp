@@ -2,10 +2,17 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReferenceBrowserApp.SubPage"
+             xmlns:local="clr-namespace:ReferenceBrowserApp"
              xmlns:models="clr-namespace:ReferenceBrowserApp.Models"
              xmlns:custom="clr-namespace:ReferenceBrowserApp.CustomViews"
              Title="SubPage"
              Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <local:InvertedBoolConverter x:Key="invertedBool"/>
+        <x:Double x:Key="InfoFontSize">16</x:Double>
+    </ContentPage.Resources>
+
 
     <!-- Using multiple rows/columns in grid, causes scroll view doesn't scroll -->
 
@@ -20,16 +27,16 @@
                         <!--<ViewCell>-->
                             <custom:SearchItemInfoView BindingContext="{Binding}" 
                                                        HeightRequest="100"
-                                                       WidthRequest="200"/> <!-- Should asign height/width -->
-                        <!--</ViewCell>-->
+                                                       WidthRequest="200"/>  <!--Should asign height/width--> 
                         <!--<Label Text="{Binding PageName}" 
                                FontSize="16"
                                HeightRequest="50"
-                               WidthRequest="200"/>-->
-                        <!--<Label Text="{Binding DirectoryName}" 
+                               WidthRequest="200"/>
+                        <Label Text="{Binding DirectoryName}" 
                                FontSize="16"
                                HeightRequest="50"
                                WidthRequest="200"/>-->
+                        <!--</ViewCell>-->
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
             </FlexLayout>
@@ -49,12 +56,20 @@
         <HorizontalStackLayout HorizontalOptions="End"  VerticalOptions="Start"
                                Spacing="20"
                                HeightRequest="50">
+            
             <Label Text="Primary" 
                    FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>
-            <Switch x:Name="PrimarySwitch" 
-                    Toggled="Switch_Toggled"/>
+            <Switch x:Name="PrimarySwitch" Toggled="SwitchPrimary_Toggled"/>
 
-            <Button Text="Sync"/>
+            <Entry x:Name="ServerIP"
+                   Text="xxx.xxx.xxx.xxx" IsEnabled="True"
+                   FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>
+
+             <!--If this app is not set as primary--> 
+            <Button Text="Sync" Clicked="ButtonSync_Clicked"
+                    IsEnabled="{Binding Source={x:Reference PrimarySwitch},
+                                        Path=IsToggled, 
+                                        Converter={StaticResource invertedBool}}"/>
 
         </HorizontalStackLayout>
 
@@ -63,10 +78,7 @@
         </HorizontalStackLayout>
 
 
-
-
     </Grid>
-
 
 
 </ContentPage>
