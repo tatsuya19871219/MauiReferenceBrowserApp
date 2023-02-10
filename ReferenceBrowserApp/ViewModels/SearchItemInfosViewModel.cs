@@ -20,14 +20,14 @@ public class SearchItemInfosViewModel
 	{
 		_database = database;
 
-		database.Updated += DatabaseUpdated;    
+		//database.Updated += DatabaseUpdated;    
     }
 
 	async public void Refresh()
 	{
-		var items = await _database.GetItemsAsync();
+		//var items = await _database.GetItemsAsync();
 
-		UpdateViewModel(items);
+		//UpdateViewModel(items);
 	}
 
 	void DatabaseUpdated(List<SearchItem> items)

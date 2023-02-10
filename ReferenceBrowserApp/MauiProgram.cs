@@ -30,6 +30,8 @@ public static class MauiProgram
 		builder.Services.AddSingleton<SearchItemDatabase>();
 		builder.Services.AddSingleton<SearchItemInfosViewModel>();
 
+		builder.Services.AddSingleton<WebViewModel>();
+
 		return builder.Build();
 	}
 }

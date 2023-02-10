@@ -2,11 +2,14 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using ReferenceBrowserApp.Data;
 using ReferenceBrowserApp.Models;
+using ReferenceBrowserApp.ViewModels;
 
 namespace ReferenceBrowserApp;
 
 public partial class MainPage : ContentPage
 {
+
+	//List<ReferenceSite> _sites = new();
 
 	string _currentLocation;
 
@@ -25,7 +28,7 @@ public partial class MainPage : ContentPage
 
 	string _baseLocalPath;
 
-    public MainPage(SearchItemDatabase database)
+    public MainPage(SearchItemDatabase database, WebViewModel vm)
 	{
 		InitializeComponent();
 
@@ -34,6 +37,10 @@ public partial class MainPage : ContentPage
 		_database = database;
 
 		BindingContext = this;
+
+		myWebView.BindingContext = vm;
+
+		//_sites.Add(new ReferenceSite("maui", "https://learn.microsoft.com/en-us/dotnet/maui/?view=net-maui-7.0"));
 
 		CurrentLocation = _baseUrl.OriginalString;
 
@@ -83,52 +90,16 @@ public partial class MainPage : ContentPage
 	async void MoveToSubPage() 
 		=> await Shell.Current.GoToAsync(nameof(SubPage)); 
 
-    async private void myWebView_Navigated(object sender, WebNavigatedEventArgs e)
+    
+
+    private void ClickGestureRecognizer_Clicked(object sender, EventArgs e)
     {
-		if (e.Result == WebNavigationResult.Success)
-		{
 
-			// if url doesn't indicate the dotnet directory or deeper, don't save
-
-			CurrentLocation = e.Url;
-
-            // analyse url
-            var url = new Uri(e.Url);
-
-			// query check including redirection on mobile 
-
-            if (e.Url.Equals(_baseUrl.OriginalString))
-			{
-				return;
-			}
-			else if(!url.LocalPath.Contains(_baseLocalPath))
-			{
-				await Task.Delay(1000);
-
-				// return to base
-				myWebView.Source = CurrentLocation = _baseUrl.OriginalString;
-
-				return;
-			}
-
-			//HttpStyleUriParser parser = new HttpStyleUriParser(); how to use this?
-			
-
-            if(!await _database.HasItemByURLAsync(e.Url))
-			{
-				_database.AddNewItemAsync(e.Url);
-			}
-			else
-			{
-				_database.UpdateItemAsync(e.Url);
-			}
-
-		}
     }
 
-    private void myWebView_Navigating(object sender, WebNavigatingEventArgs e)
+    private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
     {
-		//e.Cancel= true;
+
     }
 }
 
