@@ -60,10 +60,11 @@
             </ListView.ItemTemplate>
         </ListView>-->
 
-        <HorizontalStackLayout HorizontalOptions="End"  VerticalOptions="Start"
+        <HorizontalStackLayout x:Name="Header" 
+                               HorizontalOptions="End"  VerticalOptions="Start"
                                Spacing="20"
                                HeightRequest="50">
-            
+
             <Label Text="Primary" 
                    FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>
             <Switch x:Name="PrimarySwitch" Toggled="SwitchPrimary_Toggled"/>
@@ -78,10 +79,20 @@
                                         Path=IsToggled, 
                                         Converter={StaticResource invertedBool}}"/>
 
+            <Button Text="DELETE" Clicked="Button_DeleteDatabase"
+                    BackgroundColor="Red"/>
+
         </HorizontalStackLayout>
 
-        <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="End">
-            <Button Text="Delete database" Clicked="Button_DeleteDatabase"/>
+        <HorizontalStackLayout x:Name="Footer" 
+                               HorizontalOptions="Center"
+                               VerticalOptions="End"
+                               IsVisible="{OnPlatform True, Android=False}">
+
+            <Button x:Name="backButton" 
+                    Text="Return to browse" 
+                    Clicked="BackButton_Clicked"/>
+
         </HorizontalStackLayout>
 
 

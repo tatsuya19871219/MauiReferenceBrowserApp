@@ -1,4 +1,5 @@
 //using Org.Apache.Http.Client;
+using ReferenceBrowserApp.CustomViews;
 using ReferenceBrowserApp.Data;
 using ReferenceBrowserApp.Models;
 using ReferenceBrowserApp.Services;
@@ -12,17 +13,24 @@ namespace ReferenceBrowserApp;
 public partial class SubPage : ContentPage
 {
 
-    SearchItemDatabase _database;
+    readonly SearchItemInfosViewModel _vm;
 
-    NetworkInfoService _networkInfoService = new();
+    readonly ReferenceSearchItemDatabase _database;
+
+    readonly NetworkInfoService _networkInfoService = new();
 
     DatabaseSyncServerService? _server = null;
     DatabaseSyncClientService? _client = null;
 
 
-    public SubPage(SearchItemDatabase database, SearchItemInfosViewModel vm)
+    public static Action<SearchUri> GoToAction;
+
+
+    public SubPage(ReferenceSearchItemDatabase database, SearchItemInfosViewModel vm)
 	{
 		InitializeComponent();
+
+        InitializeOnPlatform();
 
         // Get IP Information such as local IP address
         _networkInfoService.Invoke();
@@ -36,35 +44,45 @@ public partial class SubPage : ContentPage
 
         vm.BindDatabase(database);
 
-        vm.Refresh();
+        //vm.Refresh();
+
+        _vm = vm;
+
+
+        SearchItemInfoView.GotoPageAction += (uri) =>
+        {
+            MoveToMainPage();
+            GoToAction?.Invoke(uri);
+        };
 
         UpdateServerIPEntry();
 
-        //SwipeGestureRecognizer swipeGestureRecognizer = new SwipeGestureRecognizer();
-        //swipeGestureRecognizer.Swiped += SwipeGestureRecognizer_Swiped;
-        
-        //swipeGestureRecognizer.Direction = SwipeDirection.Up;
-
-        //SearchItemScrollView.GestureRecognizers.Add(swipeGestureRecognizer);
     }
 
+    partial void InitializeOnPlatform();
 
+
+    // SubPage -> MainPage
+    protected override void OnNavigatingFrom(NavigatingFromEventArgs args)
+    {
+        base.OnNavigatingFrom(args);
+    }
+
+    // MainPage -> SubPage
     async protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
+        _vm.Refresh();
+
         base.OnNavigatedTo(args);
     }
 
-    //private void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
-    //{
-
-    //}
-
     private async void Button_DeleteDatabase(object sender, EventArgs e)
     {
-
         bool answer = await DisplayAlert("WARNING", "Are you sure to DELETE the current local database?", "YES", "NO");
 
         if (answer) _database.ClearDatabaseAsync();
+
+        _vm.Refresh();
     }
 
     private void SwitchPrimary_Toggled(object sender, ToggledEventArgs e)
@@ -87,12 +105,12 @@ public partial class SubPage : ContentPage
         UpdateServerIPEntry();
     }
 
-    protected override void OnSizeAllocated(double width, double height)
-    {
-        base.OnSizeAllocated(width, height);
+    //protected override void OnSizeAllocated(double width, double height)
+    //{
+    //    base.OnSizeAllocated(width, height);
 
-        //itemListView.HeightRequest = height*0.8;
-    }
+    //    //itemListView.HeightRequest = height*0.8;
+    //}
 
     private void ButtonSync_Clicked(object sender, EventArgs e)
     {
@@ -132,10 +150,15 @@ public partial class SubPage : ContentPage
         }
     }
 
-    private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
+
+    void BackButton_Clicked(object sender, EventArgs e)
     {
-        //(sender as ScrollView)?.
+        MoveToMainPage();
     }
+
+    async void MoveToMainPage()
+        => await Navigation.PopAsync();
+
 }
 
 public class InvertedBoolConverter : IValueConverter

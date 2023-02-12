@@ -9,37 +9,46 @@ namespace ReferenceBrowserApp.Models;
 
 public partial class SearchItemInfo : ObservableObject
 {
-    public SearchItem Item { get; private set; }
+    ReferenceSite _reference;
+    SearchUri _searchUri;
 
-    public int ID => Item.ID;
+    [ObservableProperty]
+    string uriString;
 
     //public string PageName { get; private set; }
     [ObservableProperty]
-    public string pageName;
+    string pageName;
 
-    public string DirectoryName { get; private set; }
+    [ObservableProperty]
+    string directoryName;
 
-    public int MinorCount => Item.COUNT_MINOR;
+    public int Id;
 
-    public int MajorCount => Item.COUNT_MAJOR;
+    public int MinorCount;
+
+    public int MajorCount;
 
     public string Details { get; private set; }
 
     public string URI { get; private set; }
 
-    public SearchItemInfo(SearchItem item)
+
+    public SearchItemInfo(ReferenceSite reference, SearchUri searchUri, int countMajor, int countMinor, int id)
     {
-        Item = item;
+        _reference = reference;
+        _searchUri = searchUri;
 
-        //Id = item.ID;
-        //MinorCount = item.COUNT_MINOR;
-        //MajorCount = item.COUNT_MAJOR;
+        UriString = searchUri.ToString();
 
-        var uri = new Uri(item.URL);
+        Id = id;
+        MinorCount = countMinor;
+        MajorCount = countMajor;
 
-        URI = uri.ToString();
+        //Uri uri;// = new Uri(item.URL);
 
-        string[] segments = uri.Segments;
+        URI = UriString;
+
+        string[] segments = searchUri.Segments;
 
         PageName = segments[segments.Length-1];
 
@@ -48,6 +57,6 @@ public partial class SearchItemInfo : ObservableObject
         if (DirectoryName == "maui/") DirectoryName = "/";
 
         Details = String.Format("Count {0} ({1})     ID:{2}",
-            MinorCount, MajorCount, ID);
+                                MinorCount, MajorCount, Id);
     }
 }

@@ -11,7 +11,7 @@ namespace ReferenceBrowserApp.Data;
 public class SearchItemDatabase
 {
     // Item class for the database
-    private class SearchItem
+    private protected class SearchItem
     {
         [PrimaryKey, AutoIncrement]
         public int ID { get; set; }
@@ -23,6 +23,9 @@ public class SearchItemDatabase
 
     SQLiteAsyncConnection Database;
 
+    //
+    public bool IsInitialized = false;
+
     List<SearchItem> _searchItems = new();
 
     // for store search index
@@ -32,12 +35,9 @@ public class SearchItemDatabase
     // for notifying database update
     //public Action<List<SearchItem>> Updated;
 
-    //
-    public bool IsInitialized = false;
-
     public SearchItemDatabase()
     {
-        Init();
+        _ = Init();
     }
 
     async Task Init()
@@ -54,7 +54,7 @@ public class SearchItemDatabase
             var items = await Database.Table<SearchItem>().ToListAsync();
 
             int index = 0;
-            foreach(var item in items)
+            foreach (var item in items)
             {
                 _searchItems.Add(item);
 
@@ -73,22 +73,16 @@ public class SearchItemDatabase
     }
 
 
-    //public async Task<List<SearchItem>> GetItemsAsync()
-    //{
-    //    await Init();
+    private protected List<SearchItem> GetItems()
+    {
+        return _searchItems;
+    }
 
-    //    return _searchItems;
-    //}
-
-    //public async Task<bool> HasItemByURLAsync(string url)
-    //{
-    //    var item = await GetItemByUrlAsync(url);
-
-    //    if(item is null) return false;
-    //    return true;
-
-    //}
-
+    public bool HasItemBySearchUri(SearchUri uri)
+    {
+        if (_searchIndexByUrl.ContainsKey(uri.ToString())) return true;
+        else return false;
+    }
 
     //public async Task<SearchItem> GetItemByUrlAsync(string url)
     //{
@@ -98,13 +92,14 @@ public class SearchItemDatabase
     //}
 
 
-    //
-    public async void AddNewItemAsync(string url)
+    ////
+    protected async Task AddNewItemAsync(SearchUri uri, int count = 1)
     {
         await Init();
 
         SearchItem item = new SearchItem();
-        //item.URL = url;
+        item.URL = uri.ToString();
+        item.COUNT_MINOR = count;
 
         _searchItems.Add(item);
         await Database.InsertAsync(item);
@@ -115,13 +110,13 @@ public class SearchItemDatabase
         //Updated?.Invoke(_searchItems);
     }
 
-    //
-    public async void UpdateItemAsync(string url)
+    ////
+    protected async Task UpdateItemAsync(SearchUri uri, int count = 1)
     {
         await Init();
 
-        var item = _searchItems[_searchIndexByUrl[url]];
-        item.COUNT_MINOR++;
+        var item = _searchItems[_searchIndexByUrl[uri.ToString()]];
+        item.COUNT_MINOR += count;
 
         await Database.UpdateAsync(item);
 
@@ -142,5 +137,24 @@ public class SearchItemDatabase
         //Updated?.Invoke(_searchItems);
     }
 
+    // for sync 
+    protected async Task UpdateDatabaseAsMajorAsync()
+    {
+        await Init();
 
+        foreach (var item in _searchItems)
+            await UpdateSearchItemAsMajorAsync(item);
+    }
+    private async Task UpdateSearchItemAsMajorAsync(SearchItem item)
+    {
+        await Init();
+
+        //var item = _searchItems[_searchIndexByUrl[uri.ToString()]];
+        item.COUNT_MAJOR = item.COUNT_MINOR;
+        item.COUNT_MINOR = 0;
+
+        await Database.UpdateAsync(item);
+
+        //Updated?.Invoke(_searchItems);
+    }
 }

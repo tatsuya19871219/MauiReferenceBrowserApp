@@ -8,37 +8,49 @@
         <x:Double x:Key="InfoFontSize">16</x:Double>
     </ContentPage.Resources>
 
-    
+    <!--<VerticalStackLayout>
+        <Button Text="Test"/>
+    </VerticalStackLayout>-->
     
     <VerticalStackLayout>
 
-        <Grid x:Name="Header">
+        <HorizontalStackLayout x:Name="Header" HeightRequest="50">
+
+            <Button x:Name="PreviousButton" 
+                    Text="&lt;" 
+                    IsEnabled="{Binding Source={x:Reference myWebView},
+                                        Path=CanGoBack}"/>
+            <Button x:Name="HomeButton" Text="Home" />
+            <Button x:Name="NextButton" 
+                    Text="&gt;"
+                    IsEnabled="{Binding Source={x:Reference myWebView},
+                                        Path=CanGoForward}"/>
             
-            
-            <Label x:Name="myURL" 
-                   Text="URL here"
-                   FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>
-        
-        </Grid>
+
+            <!--<Label x:Name="myURL" 
+                   Text="{Binding CurrentLocation, FallbackValue='URL here'}"
+                   FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>-->
+
+            <Label Text="{Binding CurrentStatus}" FontSize="{StaticResource InfoFontSize}"/>
+
+        </HorizontalStackLayout>
 
         <ContentView x:Name="myContentView" WidthRequest="300" HeightRequest="400">
 
+            <WebView x:Name="myWebView"/> 
+            <!--Source="https://learn.microsoft.com/dotnet/maui"/>-->
 
-            <WebView x:Name="myWebView" 
-                     Source="">
-            <!--Navigated="myWebView_Navigated"
-                     Navigating="myWebView_Navigating">-->
-
-            </WebView>
-            
         </ContentView>
 
-        <HorizontalStackLayout x:Name="Footer" Spacing="50" HorizontalOptions="Center">
+        <HorizontalStackLayout x:Name="Footer" HorizontalOptions="Center"
+                               HeightRequest="50"
+                               IsVisible="{OnPlatform True, Android=False}">
 
             <Button x:Name="checkButton" 
                     Text="Check database" 
-                    Clicked="Button_Clicked" 
+                    Clicked="CheckButton_Clicked" 
                     IsEnabled="False"/>
+            
         </HorizontalStackLayout>
 
     </VerticalStackLayout>

@@ -9,23 +9,33 @@ namespace ReferenceBrowserApp;
 public class MainActivity : MauiAppCompatActivity
 {
 
-    public override bool OnGenericMotionEvent(MotionEvent e)
+    public static MainActivity Instance { get; private set; }
+
+    private Dictionary<Type, Action> _backPressedAction = new();
+
+    public void SetBackPressedAction(Type pageType, Action action)
     {
-        return base.OnGenericMotionEvent(e);
+        _backPressedAction[pageType] = action;
     }
+
+    public MainActivity() : base()
+    {
+        Instance = this;
+    }
+
 
     public override void OnBackPressed()
     {
         // This is triggered by the user action such as 
         // swiping the app to left/right.
 
+        Type pageType = Shell.Current.CurrentPage.GetType();
+
+        _backPressedAction[pageType]?.Invoke();
+
         return;
         //base.OnBackPressed();
     }
 
-    public override bool OnTouchEvent(MotionEvent e)
-    {
-        return base.OnTouchEvent(e);
-    }
     
 }

@@ -3,11 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ReferenceBrowserApp.CustomViews.SearchItemInfoView">
     <VerticalStackLayout HorizontalOptions="Start">
-        
+
         <Label Text="{Binding PageName}"
                HorizontalOptions="Start"
                FontSize="24"
-               TextColor="Blue"/>
+               TextColor="Blue">
+
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+            </Label.GestureRecognizers>
+        </Label>
 
         <!--<HorizontalStackLayout HorizontalOptions="Start">
             <Label Text="{Binding ID}"/>
@@ -24,7 +29,7 @@
                FontSize="12"
                TextColor="Gray"/>
 
-        <Label Text="{Binding URI}"
+        <Label Text="{Binding UriString}"
                HorizontalOptions="Start"
                FontSize="10"
                TextColor="LightGreen"/>

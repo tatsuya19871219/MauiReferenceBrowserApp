@@ -9,97 +9,73 @@ namespace ReferenceBrowserApp;
 public partial class MainPage : ContentPage
 {
 
-	//List<ReferenceSite> _sites = new();
-
-	string _currentLocation;
-
-	public string CurrentLocation {
-		get => _currentLocation;
-		private set
-		{
-			_currentLocation = value;
-			myURL.Text = _currentLocation;
-		} 
-	}
-	
-	SearchItemDatabase _database;
-
-	Uri _baseUrl = new Uri("https://learn.microsoft.com/en-us/dotnet/maui/?view=net-maui-7.0");
-
-	string _baseLocalPath;
-
-    public MainPage(SearchItemDatabase database, WebViewModel vm)
+    public MainPage(WebViewModel vm)
 	{
 		InitializeComponent();
 
+		InitializeOnPlatform();
+
 		//Application.Current.UserAppTheme = AppTheme.Dark;
 		
-		_database = database;
+		BindingContext = vm;
 
-		BindingContext = this;
+		vm.BindWebView(myWebView);
 
-		myWebView.BindingContext = vm;
+        vm.SetReferenceSite(new ReferenceSite("maui", "https://learn.microsoft.com/en-us/dotnet/maui/?view=net-maui-7.0"));
+        //vm.SetReferenceSite(new ReferenceSite("maui", "https://learn.microsoft.com/en-us/dotnet/maui"));
 
-		//_sites.Add(new ReferenceSite("maui", "https://learn.microsoft.com/en-us/dotnet/maui/?view=net-maui-7.0"));
+        //myWebView.Source = "https://learn.microsoft.com/en-us/dotnet/maui/?view=net-maui-7.0";
 
-		CurrentLocation = _baseUrl.OriginalString;
+        HomeButton.Clicked += vm.GoHome;
+        PreviousButton.Clicked += vm.GoPrevious;
+        NextButton.Clicked += vm.GoNext;
 
-		_baseLocalPath = _baseUrl.LocalPath;
+        checkButton.IsEnabled = true;
 
-		//SwipeGestureRecognizer swipeGesture = new SwipeGestureRecognizer();
+        myWebView.Navigating += vm.NavigatingCallback;
+		myWebView.Navigated += vm.NavigatedCallback;
 
-		myWebView.Source = CurrentLocation;
-
-		// prepare to access database
-		PrepareDatabaseAccess();
+		SubPage.GoToAction += vm.GoTo;
     }
 
-	async void PrepareDatabaseAccess()
-	{
-		while (true)
-		{
-			if (_database.IsInitialized) break;
-			await Task.Delay(100);
-		}
-
-		checkButton.IsEnabled = true;
-	}
+	partial void InitializeOnPlatform();
 
 
-    private void Button_Clicked(object sender, EventArgs e)
+    private void CheckButton_Clicked(object sender, EventArgs e)
     {
 		MoveToSubPage();
     }
+
+	async void MoveToSubPage() 
+		=> await Shell.Current.GoToAsync(nameof(SubPage)); 
+
 
     protected override void OnSizeAllocated(double width, double height)
     {
         base.OnSizeAllocated(width, height);
 
+		//return;
+
 		myContentView.WidthRequest = width;
+
+		//myContentView.HeightRequest = height - Header.Height - Footer.Height;
+
+#if WINDOWS
 		myContentView.HeightRequest = height - Header.Height - Footer.Height;
+#elif ANDROID
 
-    }
+  //      this.MinimumHeightRequest = 0;
+		//this.MinimumWidthRequest = 0;
+		//this.HeightRequest = height;
+		//this.WidthRequest = width;
 
-	async private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
-	{
-		//Page page = (Page)Activator.CreateInstance(typeof(SubPage));
-		//SubPage page = (SubPage)Activator.CreateInstance(typeof(SubPage));
-		//await Navigation.PushAsync(page);
+		myContentView.HeightRequest = height - Header.Height;
+		//myContentView.HeightRequest = 600;
+
+		//Header.WidthRequest = Footer.WidthRequest = width;
+#endif
+
 	}
 
-	async void MoveToSubPage() 
-		=> await Shell.Current.GoToAsync(nameof(SubPage)); 
-
-    
-
-    private void ClickGestureRecognizer_Clicked(object sender, EventArgs e)
-    {
-
-    }
-
-    private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
-    {
-
-    }
 }
 

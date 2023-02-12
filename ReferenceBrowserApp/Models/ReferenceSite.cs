@@ -1,5 +1,4 @@
-﻿using Android.Icu.Text;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,19 +6,26 @@ using System.Threading.Tasks;
 
 namespace ReferenceBrowserApp.Models;
 
-public class ReferenceSite
+public class ReferenceSite : SearchUri
 {
-    readonly SearchUri _referenceUri;
+    //readonly SearchUri _referenceUri;
 
     readonly public string Name;
-    readonly public string URI;
+    //readonly public string URI;
 
-    public ReferenceSite(string id, string uri)
+    //readonly public string AbsoluteUri;
+
+    public ReferenceSite(string name, string uri) : base(uri)
     {
-        Name = id; URI = uri;
+        Name = name; 
+        //URI = uri;
 
-        _referenceUri = new SearchUri(uri);
+        //_referenceUri = new SearchUri(uri);
+
+        //AbsoluteUri = _referenceUri.AbsoluteUri;
     }
+
+    //public SearchUri GetURI() => _referenceUri;
 
 
     /// <summary>
@@ -29,13 +35,15 @@ public class ReferenceSite
     /// <returns>true if search URI is in the reference site</returns>
     public bool Contains(SearchUri searchUri)
     {
-        if (_referenceUri.Host != searchUri.Host) return false;
+        if (this.Host != searchUri.Host) return false;
 
         string[] searchSegments = searchUri.Segments;
-        string[] refSegments = _referenceUri.Segments;
+        string[] refSegments = this.Segments;
+
+        if (searchSegments.Length < refSegments.Length) return false;
 
         for (int i=0; i< refSegments.Length; i++)
-            if (refSegments[i] != searchUri.Segments[i]) return false;
+            if (refSegments[i] != searchSegments[i]) return false;
 
         return true;
     }

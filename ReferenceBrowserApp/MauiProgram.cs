@@ -27,9 +27,9 @@ public static class MauiProgram
 		builder.Services.AddSingleton<MainPage>();
 		builder.Services.AddSingleton<SubPage>();
 
-		builder.Services.AddSingleton<SearchItemDatabase>();
-		builder.Services.AddSingleton<SearchItemInfosViewModel>();
+		builder.Services.AddSingleton<ReferenceSearchItemDatabase>();
 
+		builder.Services.AddSingleton<SearchItemInfosViewModel>();
 		builder.Services.AddSingleton<WebViewModel>();
 
 		return builder.Build();

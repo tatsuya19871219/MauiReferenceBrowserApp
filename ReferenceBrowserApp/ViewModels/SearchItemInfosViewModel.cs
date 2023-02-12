@@ -7,7 +7,7 @@ namespace ReferenceBrowserApp.ViewModels;
 public class SearchItemInfosViewModel 
 {
 
-	SearchItemDatabase _database;
+	ReferenceSearchItemDatabase _database;
 
 	public ObservableCollection<SearchItemInfo> SearchItemInfos { get; private set; } = new();
 
@@ -16,32 +16,22 @@ public class SearchItemInfosViewModel
 
 	}
 
-	public void BindDatabase(SearchItemDatabase database)
+	public void BindDatabase(ReferenceSearchItemDatabase database)
 	{
 		_database = database;
-
-		//database.Updated += DatabaseUpdated;    
     }
 
 	async public void Refresh()
 	{
-		//var items = await _database.GetItemsAsync();
+		SearchItemInfos.Clear();
 
-		//UpdateViewModel(items);
+		var list = _database.GetSearchItemInfos();
+		
+		foreach (var info in list)
+		{
+			SearchItemInfos.Add(info);
+		}
+		
 	}
 
-	void DatabaseUpdated(List<SearchItem> items)
-	{
-		UpdateViewModel(items);   
-	}
-
-	void UpdateViewModel(List<SearchItem> items) 
-	{
-        SearchItemInfos.Clear();
-
-        foreach (var item in items)
-        {
-            SearchItemInfos.Add(new SearchItemInfo(item));
-        }
-    }
 }

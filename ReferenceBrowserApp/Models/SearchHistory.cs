@@ -10,13 +10,22 @@ public class SearchHistory
 {
     private List<SearchUri> _history = new();
 
-    private int _location = 0; // Browsing location in history list
+    private int _location; // Browsing location in history list
 
     private ReferenceSite _reference;
 
     public SearchHistory(ReferenceSite reference)
     {
         _reference = reference;
+
+        // First item in the history is reference 
+        _history.Add(reference);
+        _location = 0;
+    }
+
+    public bool IsCurrentUri(SearchUri uri)
+    {
+        return uri.ToString() == _history[_location].ToString();
     }
 
     /// <summary>
@@ -27,12 +36,16 @@ public class SearchHistory
     /// <returns>true if the URI is in the reference site</returns>
     public bool TryPush(SearchUri uri)
     {
+        if (IsCurrentUri(uri)) return false;
+
         if (_reference.Contains(uri))
         {
-            if (_location == _history.Count - 1) _history.Add(uri);
+            if (_location == _history.Count - 1)
+            {
+                _history.Add(uri);
+                _location++;
+            }
             else MakeNewBranch(uri);
-
-            _location++;
 
             return true;
         }
@@ -69,8 +82,20 @@ public class SearchHistory
     /// <param name="uri">Navigating URI</param>
     private void MakeNewBranch(SearchUri uri)
     {
-        _history.RemoveRange(_location+1, _history.Count-_location);
+        if (_history.Count > 1)
+            _history.RemoveRange(_location+1, _history.Count-_location-1);
 
         TryPush(uri);
+    }
+
+    //
+    public void GoForward()
+    {
+        if (_location < _history.Count-1) _location++;
+    }
+
+    public void GoBack()
+    {
+        if (_location > 0) _location--;
     }
 }

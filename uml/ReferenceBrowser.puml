@@ -1,0 +1,110 @@
+@startuml ReferenceBrowser
+class SearchUri {
+    - uri : Uri 
+    + Host : string 
+    + Segments : string[]
+    ' + AbsoluteUri : string 
+    + SearchUri(uriString : string)
+    + ToString() : string
+}
+
+SearchUri <|-- ReferenceSite
+class ReferenceSite {
+    ' - referenceUri : SearchUri 
+    + Name : string 
+    ' + AbsoluteUri : string
+    + ReferenceSite(name : string, uriString : string)
+    ' + GetURI() : SearchUri
+    + Contains(searchUri : SearchUri) : bool
+}
+
+SearchUri <--o SearchHistory
+class SearchHistory {
+    - history : List<SearchUri>
+    - location : int 
+    - reference : ReferenceSite
+    + SearchHistory(reference : ReferenceSite)
+    + TryPush(uri : SearchUri) : bool
+    + TryPop(out uri : SearchUri) : bool
+    - MakeNewBranch(uri : SearchUri) : void
+}
+
+SearchItemDatabase +-- SearchItem 
+class SearchItem 
+{
+    + ID : int
+    + URL : string
+    + COUNT_MAJOR : int
+    + COUNT_MINOR : int
+}
+
+SearchItem <--o SearchItemDatabase
+' class SearchItemDatabase
+abstract SearchItemDatabase
+{
+    - Database : SQLiteAsyncConnection 
+    - searchItems : List<SearchItem>
+    - searchIndexByID : Dictionary<int, int> 
+    - searchIndexByURL : Dictionary<string, int>
+    + IsInitialized : bool
+    + SearchItemDatabase()
+    - Init() : void
+    # GetItems() : List<SearchItem>
+    + HasItemBySearchUri(searchUri : SearchUri) : bool
+    # AddNewItemAsync(uri : SearchUri, count : int) : Task
+    # UpdateItemAsync(uri : SearchUri, count : int) : Task
+    # UpdateDatabaseAsMajorAsync() : Task
+    - UpdateSearchItemAsMajorAsync() : Task
+    + ClearDatabaseAsync() : bool
+}
+
+SearchItemDatabase <|.. ReferenceSearchItemDatabase
+class ReferenceSearchItemDatabase
+{
+    - referenceSite : ReferenceSite
+    + ReferenceSearchItemDatabase()
+    + SetReferenceSite(reference : ReferenceSite) : void
+    + TryPushSearchUri(uri : SearchUri) : bool
+    + TryGetSearchItemInfos(out searchItemInfos : List<SearchItemInfo>) : bool
+}
+
+ReferenceSite <-- SearchItemInfo
+SearchUri <-- SearchItemInfo
+class SearchItemInfo
+{
+    - reference : ReferenceSite
+    - searchUri : SearchUri
+    + PageName : string
+    + DirectoryName : string
+    + URI : string
+    + Details : string
+    + SearchItemInfo()
+}
+
+SearchItemInfo <--o SearchItemInfosViewModel
+ReferenceSearchItemDatabase <-- SearchItemInfosViewModel
+class SearchItemInfosViewModel
+{
+    - database : ReferenceSearchItemDatabase
+    + SearchItemInfos : ObservableCollection<SearchItemInfo>
+    + BindDatabase(database : ReferenceSearchItemDatabase) : void 
+    + Refresh() : void
+}
+
+
+ReferenceSearchItemDatabase <-- WebViewModel
+SearchHistory <-- WebViewModel
+ReferenceSite <-- WebViewModel
+class WebViewModel 
+{
+    + CurrentLocation : string
+    - reference : ReferenceSite
+    - database : ReferenceSearchItemDatabase
+    - SearchHistory : SearchHistory
+    + WebViewModel(database : ReferenceSearchItemDatabase)
+    + SetReferenceSite(reference : ReferenceSite) : void
+    + NavigatingCallback(sender : object, e : WebNavigatingEventArgs) : void
+    + NavigatedCallback(sender : object, e : WebNavigatedEventArgs) : void
+}
+
+@enduml
