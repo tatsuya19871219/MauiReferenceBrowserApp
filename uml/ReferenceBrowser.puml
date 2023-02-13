@@ -2,19 +2,16 @@
 class SearchUri {
     - uri : Uri 
     + Host : string 
+    + LocalPath : string
     + Segments : string[]
-    ' + AbsoluteUri : string 
     + SearchUri(uriString : string)
     + ToString() : string
 }
 
 SearchUri <|-- ReferenceSite
 class ReferenceSite {
-    ' - referenceUri : SearchUri 
     + Name : string 
-    ' + AbsoluteUri : string
     + ReferenceSite(name : string, uriString : string)
-    ' + GetURI() : SearchUri
     + Contains(searchUri : SearchUri) : bool
 }
 
@@ -24,9 +21,12 @@ class SearchHistory {
     - location : int 
     - reference : ReferenceSite
     + SearchHistory(reference : ReferenceSite)
+    + IsCurrentUri(uri : SearchUri) : bool
     + TryPush(uri : SearchUri) : bool
     + TryPop(out uri : SearchUri) : bool
     - MakeNewBranch(uri : SearchUri) : void
+    + GoForward() : void
+    + GoBack() : void
 }
 
 SearchItemDatabase +-- SearchItem 
@@ -40,7 +40,7 @@ class SearchItem
 
 SearchItem <--o SearchItemDatabase
 ' class SearchItemDatabase
-abstract SearchItemDatabase
+class SearchItemDatabase
 {
     - Database : SQLiteAsyncConnection 
     - searchItems : List<SearchItem>
@@ -58,27 +58,34 @@ abstract SearchItemDatabase
     + ClearDatabaseAsync() : bool
 }
 
-SearchItemDatabase <|.. ReferenceSearchItemDatabase
+SearchItemDatabase <|-- ReferenceSearchItemDatabase
 class ReferenceSearchItemDatabase
 {
     - referenceSite : ReferenceSite
     + ReferenceSearchItemDatabase()
     + SetReferenceSite(reference : ReferenceSite) : void
     + TryPushSearchUri(uri : SearchUri) : bool
-    + TryGetSearchItemInfos(out searchItemInfos : List<SearchItemInfo>) : bool
+    + GetSearchItemInfos() : List<SearchItemInfo>
+    - ConstructSearchItemInfo(item : SearchItem) : SearchItemInfo
+    + PrepareToSync() : void
 }
 
 ReferenceSite <-- SearchItemInfo
 SearchUri <-- SearchItemInfo
+SearchItemInfo <-- ReferenceSearchItemDatabase
 class SearchItemInfo
 {
     - reference : ReferenceSite
     - searchUri : SearchUri
+    + UriString : string
     + PageName : string
     + DirectoryName : string
-    + URI : string
+    + ID : int
+    + MajorCount : int
+    + MinorCount : int
+    ' + URI : string
     + Details : string
-    + SearchItemInfo()
+    + SearchItemInfo(reference : ReferenceSite, searchUri : SearchUri, countMajor : int, countMinor : int, id : int)
 }
 
 SearchItemInfo <--o SearchItemInfosViewModel
@@ -98,13 +105,19 @@ ReferenceSite <-- WebViewModel
 class WebViewModel 
 {
     + CurrentLocation : string
+    + CurrentStatus : string
     - reference : ReferenceSite
     - database : ReferenceSearchItemDatabase
     - SearchHistory : SearchHistory
     + WebViewModel(database : ReferenceSearchItemDatabase)
+    + BindWebView(webView : WebView)
     + SetReferenceSite(reference : ReferenceSite) : void
     + NavigatingCallback(sender : object, e : WebNavigatingEventArgs) : void
     + NavigatedCallback(sender : object, e : WebNavigatedEventArgs) : void
+    + GoHome(sender : object, e : EventArgs) : void
+    + GoNext(sender : object, e : EventArgs) : void
+    + GoPrevious(sender : object, e : EventArgs) : void
+    + GoTo(uri : SearchUri) : void
 }
 
 @enduml

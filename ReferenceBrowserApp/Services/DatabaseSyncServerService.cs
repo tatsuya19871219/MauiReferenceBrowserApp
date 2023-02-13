@@ -42,7 +42,7 @@ public class DatabaseSyncServerService
             _handler = await _listener.AcceptAsync();
 
             // preparation for sync 
-            await _database.PreparationToSync();
+            await _database.PrepareToSync();
 
             // update: client -> server
             string response;

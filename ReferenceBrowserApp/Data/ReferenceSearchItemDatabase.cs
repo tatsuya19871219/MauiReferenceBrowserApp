@@ -54,7 +54,7 @@ public class ReferenceSearchItemDatabase : SearchItemDatabase
         return new SearchItemInfo(_reference, new SearchUri(item.URL), item.COUNT_MAJOR, item.COUNT_MINOR, item.ID);
     }
 
-    async public Task PreparationToSync()
+    async public Task PrepareToSync()
     {
         await UpdateDatabaseAsMajorAsync();
     }

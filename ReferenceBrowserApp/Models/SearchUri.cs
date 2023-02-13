@@ -22,18 +22,7 @@ public class SearchUri
     {
         _uri = new Uri(uriString);
         
-        //Host = _searchUri.Host;
-        //Segments = _searchUri.Segments;
-
-        //AbsoluteUri = _searchUri.AbsoluteUri;
     }
-
-    //public List<string> GetSegments()
-    //{
-    //    string dummy = _searchUri?.Segments[0];
-
-    //    return new List<string>(_searchUri?.Segments);
-    //}
 
     public override string ToString()
     {

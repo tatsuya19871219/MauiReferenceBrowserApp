@@ -30,7 +30,7 @@ public partial class SearchItemInfo : ObservableObject
 
     public string Details { get; private set; }
 
-    public string URI { get; private set; }
+    //public string URI { get; private set; }
 
 
     public SearchItemInfo(ReferenceSite reference, SearchUri searchUri, int countMajor, int countMinor, int id)
@@ -46,7 +46,7 @@ public partial class SearchItemInfo : ObservableObject
 
         //Uri uri;// = new Uri(item.URL);
 
-        URI = UriString;
+        //URI = UriString;
 
         string[] segments = searchUri.Segments;
 

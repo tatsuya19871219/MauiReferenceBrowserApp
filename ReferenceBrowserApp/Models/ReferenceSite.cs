@@ -8,24 +8,12 @@ namespace ReferenceBrowserApp.Models;
 
 public class ReferenceSite : SearchUri
 {
-    //readonly SearchUri _referenceUri;
-
     readonly public string Name;
-    //readonly public string URI;
-
-    //readonly public string AbsoluteUri;
 
     public ReferenceSite(string name, string uri) : base(uri)
     {
         Name = name; 
-        //URI = uri;
-
-        //_referenceUri = new SearchUri(uri);
-
-        //AbsoluteUri = _referenceUri.AbsoluteUri;
     }
-
-    //public SearchUri GetURI() => _referenceUri;
 
 
     /// <summary>
