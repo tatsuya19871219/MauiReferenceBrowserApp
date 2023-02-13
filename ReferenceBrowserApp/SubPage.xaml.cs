@@ -1,4 +1,4 @@
-//using Org.Apache.Http.Client;
+using Microsoft.Maui.Controls.Platform;
 using ReferenceBrowserApp.CustomViews;
 using ReferenceBrowserApp.Data;
 using ReferenceBrowserApp.Models;
@@ -23,11 +23,14 @@ public partial class SubPage : ContentPage
     DatabaseSyncClientService? _client = null;
 
 
-    public static Action<SearchUri> GoToAction;
+    //public static Action<SearchUri> GoToAction;
 
 
     public SubPage(ReferenceSearchItemDatabase database, SearchItemInfosViewModel vm)
 	{
+
+        _database = database; // _database is used in initialize component (Switch)
+
 		InitializeComponent();
 
         InitializeOnPlatform();
@@ -40,8 +43,6 @@ public partial class SubPage : ContentPage
 
         BindingContext = vm;
 
-        _database = database;
-
         vm.BindDatabase(database);
 
         //vm.Refresh();
@@ -52,7 +53,8 @@ public partial class SubPage : ContentPage
         SearchItemInfoView.GotoPageAction += (uri) =>
         {
             MoveToMainPage();
-            GoToAction?.Invoke(uri);
+            //GoToAction?.Invoke(uri);
+            WebViewModel.Instance.GoTo(uri);
         };
 
         UpdateServerIPEntry();
@@ -69,7 +71,7 @@ public partial class SubPage : ContentPage
     }
 
     // MainPage -> SubPage
-    async protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         _vm.Refresh();
 
@@ -80,9 +82,15 @@ public partial class SubPage : ContentPage
     {
         bool answer = await DisplayAlert("WARNING", "Are you sure to DELETE the current local database?", "YES", "NO");
 
-        if (answer) _database.ClearDatabaseAsync();
+        if (answer)
+        {
+            await _database.ClearDatabaseAsync();
 
-        _vm.Refresh();
+            _vm.Refresh();
+
+            SearchItemList.Clear();
+            
+        }
     }
 
     private void SwitchPrimary_Toggled(object sender, ToggledEventArgs e)
@@ -95,7 +103,8 @@ public partial class SubPage : ContentPage
             _client?.ShutdownClient();
 
             // if primary is true, prepare server
-            _server = new DatabaseSyncServerService(_networkInfoService);
+            _server = new DatabaseSyncServerService(_database, _networkInfoService);
+            _server.Invoke();
         }
         else
         {
@@ -105,14 +114,7 @@ public partial class SubPage : ContentPage
         UpdateServerIPEntry();
     }
 
-    //protected override void OnSizeAllocated(double width, double height)
-    //{
-    //    base.OnSizeAllocated(width, height);
-
-    //    //itemListView.HeightRequest = height*0.8;
-    //}
-
-    private void ButtonSync_Clicked(object sender, EventArgs e)
+    private async void ButtonSync_Clicked(object sender, EventArgs e)
     {
         // Sync database with the primary app (server)
 
@@ -127,11 +129,24 @@ public partial class SubPage : ContentPage
         catch (Exception ex)
         {
             // fails to parse text
-            // Alart
+            DisplayAlert("Notification", "Fails to parse IP address from text", "OK");
+
             return;
         }
 
-        _client = new DatabaseSyncClientService(targetIPAdress);
+        _client = new DatabaseSyncClientService(_database, targetIPAdress);
+
+        await _client.Invoke();
+
+        //SearchItemList.Clear();
+
+        await DisplayAlert("Notification", "Search items are successfully synchronized.", "OK");
+
+        //MoveToMainPage();
+
+        // Reload page
+        await Navigation.PopAsync();
+        await Shell.Current.GoToAsync(nameof(SubPage));
 
     }
 

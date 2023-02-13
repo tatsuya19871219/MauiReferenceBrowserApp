@@ -13,6 +13,7 @@ namespace ReferenceBrowserApp.ViewModels;
 
 public partial class WebViewModel : ObservableObject
 {
+    public static WebViewModel Instance;
 
     [ObservableProperty]
     string currentLocation;
@@ -32,6 +33,8 @@ public partial class WebViewModel : ObservableObject
     public WebViewModel(ReferenceSearchItemDatabase database) 
     {
         _database = database;
+
+        Instance = this;
 
         CurrentStatus = "WebViewModel is Initialized.";
     }

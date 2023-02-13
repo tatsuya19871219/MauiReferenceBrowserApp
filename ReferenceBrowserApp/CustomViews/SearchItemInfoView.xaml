@@ -7,7 +7,7 @@
         <Label Text="{Binding PageName}"
                HorizontalOptions="Start"
                FontSize="24"
-               TextColor="Blue">
+               TextColor="Cyan">
 
             <Label.GestureRecognizers>
                 <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>

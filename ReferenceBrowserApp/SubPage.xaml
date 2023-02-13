@@ -8,64 +8,35 @@
              Title="SubPage"
              Shell.NavBarIsVisible="False">
 
-    <ContentPage.Resources>
-        <local:InvertedBoolConverter x:Key="invertedBool"/>
-        <x:Double x:Key="InfoFontSize">16</x:Double>
-    </ContentPage.Resources>
-
-
-    <!-- Using multiple rows/columns in grid, causes scroll view doesn't scroll -->
+    <!-- Using multiple rows/columns in grid, causes ScrollView doesn't scroll -->
 
     <Grid HorizontalOptions="Center">
 
-        
-        
-        <ScrollView x:Name="SearchItemScrollView" Margin="50">
+        <ScrollView x:Name="SearchItemScrollView" Margin="60">
             
-            <!--<ScrollView.GestureRecognizers>
-                <SwipeGestureRecognizer Direction="Up"  Swiped="SwipeGestureRecognizer_Swiped"/>
-            </ScrollView.GestureRecognizers>-->
-            
-            <FlexLayout Wrap="Wrap"
+            <FlexLayout x:Name = "SearchItemList" 
+                        Wrap="Wrap"
                         JustifyContent="SpaceAround"
                         BindableLayout.ItemsSource="{Binding SearchItemInfos}">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
-                        <!--<ViewCell>-->
-                            <custom:SearchItemInfoView BindingContext="{Binding}" 
-                                                       HeightRequest="100"
-                                                       WidthRequest="200"/>  <!--Should asign height/width--> 
-                        <!--<Label Text="{Binding PageName}" 
-                               FontSize="16"
-                               HeightRequest="50"
-                               WidthRequest="200"/>
-                        <Label Text="{Binding DirectoryName}" 
-                               FontSize="16"
-                               HeightRequest="50"
-                               WidthRequest="200"/>-->
-                        <!--</ViewCell>-->
+
+                        <custom:SearchItemInfoView BindingContext="{Binding}" 
+                                                   HeightRequest="100"
+                                                   WidthRequest="250"/>  <!--Should asign height/width--> 
+
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
             </FlexLayout>
         </ScrollView>
 
-        <!--<ListView x:Name="itemListView" 
-                  ItemsSource="{Binding SearchItemInfos}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <custom:SearchItemInfoView/>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>-->
 
         <HorizontalStackLayout x:Name="Header" 
                                HorizontalOptions="End"  VerticalOptions="Start"
-                               Spacing="20"
+                               Spacing="{OnPlatform 20, Android=5}"
                                HeightRequest="50">
 
-            <Label Text="Primary" 
+            <Label Text="As Server" 
                    FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>
             <Switch x:Name="PrimarySwitch" Toggled="SwitchPrimary_Toggled"/>
 
@@ -73,13 +44,14 @@
                    Text="xxx.xxx.xxx.xxx" IsEnabled="True"
                    FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>
 
-             <!--If this app is not set as primary--> 
+            <!--If this app is not set as primary--> 
             <Button Text="Sync" Clicked="ButtonSync_Clicked"
                     IsEnabled="{Binding Source={x:Reference PrimarySwitch},
                                         Path=IsToggled, 
                                         Converter={StaticResource invertedBool}}"/>
 
             <Button Text="DELETE" Clicked="Button_DeleteDatabase"
+                    TextColor="White"
                     BackgroundColor="Red"/>
 
         </HorizontalStackLayout>

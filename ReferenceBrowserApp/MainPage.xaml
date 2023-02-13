@@ -4,37 +4,40 @@
              x:Class="ReferenceBrowserApp.MainPage"
              Shell.NavBarIsVisible="False">
 
-    <ContentPage.Resources>
-        <x:Double x:Key="InfoFontSize">16</x:Double>
-    </ContentPage.Resources>
-
-    <!--<VerticalStackLayout>
-        <Button Text="Test"/>
-    </VerticalStackLayout>-->
-    
     <VerticalStackLayout>
 
-        <HorizontalStackLayout x:Name="Header" HeightRequest="50">
-
-            <Button x:Name="PreviousButton" 
-                    Text="&lt;" 
-                    IsEnabled="{Binding Source={x:Reference myWebView},
-                                        Path=CanGoBack}"/>
-            <Button x:Name="HomeButton" Text="Home" />
-            <Button x:Name="NextButton" 
-                    Text="&gt;"
-                    IsEnabled="{Binding Source={x:Reference myWebView},
-                                        Path=CanGoForward}"/>
+        <VerticalStackLayout x:Name="Header">
             
+            <HorizontalStackLayout HeightRequest="50" Spacing="10"
+                                   HorizontalOptions="{OnPlatform Start, Android=Center}">
 
-            <!--<Label x:Name="myURL" 
-                   Text="{Binding CurrentLocation, FallbackValue='URL here'}"
-                   FontSize="{StaticResource InfoFontSize}" VerticalOptions="Center"/>-->
+                <Button x:Name="PreviousButton" 
+                        Text="&lt;" 
+                        IsEnabled="{Binding Source={x:Reference myWebView},
+                                            Path=CanGoBack}"/>
+                <Button x:Name="HomeButton" Text="Home" />
+                <Button x:Name="NextButton" 
+                        Text="&gt;"
+                        IsEnabled="{Binding Source={x:Reference myWebView},
+                                            Path=CanGoForward}"/>
 
-            <Label Text="{Binding CurrentStatus}" FontSize="{StaticResource InfoFontSize}"/>
 
-        </HorizontalStackLayout>
+                <Label x:Name="myURL" 
+                       Text="{Binding CurrentLocation, FallbackValue='URL here'}"
+                       FontSize="{StaticResource InfoFontSize}" 
+                       TextColor="Gray"
+                       VerticalOptions="Center"
+                       IsVisible="{OnPlatform True, Android=False}"/>
 
+
+            </HorizontalStackLayout>
+        
+            <Label Text="{Binding CurrentStatus}" FontSize="{StaticResource InfoFontSize}"
+                   TextColor="Cyan"
+                   HorizontalOptions="{OnPlatform Start, Android=Center}"/>
+
+        </VerticalStackLayout>
+        
         <ContentView x:Name="myContentView" WidthRequest="300" HeightRequest="400">
 
             <WebView x:Name="myWebView"/> 

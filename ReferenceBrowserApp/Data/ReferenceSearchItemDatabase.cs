@@ -21,12 +21,14 @@ public class ReferenceSearchItemDatabase : SearchItemDatabase
     }
 
 
-    public bool TryPushSearchUri(SearchUri uri)
+    async public Task<bool> TryPushSearchUri(SearchUri uri, int count = 1)
     {
         if (_reference.Contains(uri))
         {
-            if (HasItemBySearchUri(uri)) UpdateItemAsync(uri);
-            else AddNewItemAsync(uri);
+            if (_reference.ToString() == uri.ToString()) return false;
+
+            if (HasItemBySearchUri(uri)) await UpdateItemAsync(uri, count);
+            else await AddNewItemAsync(uri, count);
 
             return true;
         }
@@ -50,6 +52,11 @@ public class ReferenceSearchItemDatabase : SearchItemDatabase
     SearchItemInfo ConstructSearchItemInfo(SearchItem item)
     {
         return new SearchItemInfo(_reference, new SearchUri(item.URL), item.COUNT_MAJOR, item.COUNT_MINOR, item.ID);
+    }
+
+    async public Task PreparationToSync()
+    {
+        await UpdateDatabaseAsMajorAsync();
     }
 
 }

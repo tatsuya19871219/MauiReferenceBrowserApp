@@ -15,16 +15,13 @@ public partial class MainPage : ContentPage
 
 		InitializeOnPlatform();
 
-		//Application.Current.UserAppTheme = AppTheme.Dark;
+		Application.Current.UserAppTheme = AppTheme.Dark;
 		
 		BindingContext = vm;
 
 		vm.BindWebView(myWebView);
 
-        vm.SetReferenceSite(new ReferenceSite("maui", "https://learn.microsoft.com/en-us/dotnet/maui/?view=net-maui-7.0"));
-        //vm.SetReferenceSite(new ReferenceSite("maui", "https://learn.microsoft.com/en-us/dotnet/maui"));
-
-        //myWebView.Source = "https://learn.microsoft.com/en-us/dotnet/maui/?view=net-maui-7.0";
+        vm.SetReferenceSite(new ReferenceSite("MAUI", "https://learn.microsoft.com/en-us/dotnet/maui/?view=net-maui-7.0"));
 
         HomeButton.Clicked += vm.GoHome;
         PreviousButton.Clicked += vm.GoPrevious;
@@ -35,7 +32,7 @@ public partial class MainPage : ContentPage
         myWebView.Navigating += vm.NavigatingCallback;
 		myWebView.Navigated += vm.NavigatedCallback;
 
-		SubPage.GoToAction += vm.GoTo;
+		//SubPage.GoToAction += vm.GoTo;
     }
 
 	partial void InitializeOnPlatform();
@@ -54,25 +51,12 @@ public partial class MainPage : ContentPage
     {
         base.OnSizeAllocated(width, height);
 
-		//return;
-
 		myContentView.WidthRequest = width;
-
-		//myContentView.HeightRequest = height - Header.Height - Footer.Height;
 
 #if WINDOWS
 		myContentView.HeightRequest = height - Header.Height - Footer.Height;
 #elif ANDROID
-
-  //      this.MinimumHeightRequest = 0;
-		//this.MinimumWidthRequest = 0;
-		//this.HeightRequest = height;
-		//this.WidthRequest = width;
-
 		myContentView.HeightRequest = height - Header.Height;
-		//myContentView.HeightRequest = 600;
-
-		//Header.WidthRequest = Footer.WidthRequest = width;
 #endif
 
 	}

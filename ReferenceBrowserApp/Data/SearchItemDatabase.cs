@@ -124,7 +124,7 @@ public class SearchItemDatabase
     }
 
     //
-    public async void ClearDatabaseAsync()
+    public async Task ClearDatabaseAsync()
     {
         await Init();
 

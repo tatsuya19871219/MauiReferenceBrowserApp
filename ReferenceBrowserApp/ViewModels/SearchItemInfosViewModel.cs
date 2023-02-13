@@ -21,7 +21,7 @@ public class SearchItemInfosViewModel
 		_database = database;
     }
 
-	async public void Refresh()
+	public void Refresh()
 	{
 		SearchItemInfos.Clear();
 
