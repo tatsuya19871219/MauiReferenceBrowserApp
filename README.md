@@ -3,7 +3,9 @@
 　A browser for .NET MAUI official documentation. The pages viewed are recorded in a database and can be synchronized between smartphone (Android) and PC.
 
 ## Files edited
-
+<details>
+<summary>Details</summary>
+ 
  - ReferenceBrowserApp/
      - CustomViews/
          - [SearchItemInfoView.xaml](./ReferenceBrowserApp/CustomViews/SearchItemInfoView.xaml)
@@ -43,8 +45,18 @@
      - [SubPage.xaml.cs](./ReferenceBrowserApp/SubPage.xaml.cs)
  - uml/
      - [ReferenceBrowser.puml](./uml/ReferenceBrowser.puml)
+</details>
+
 ## UML (Partial)
+
+[Source](./uml/ReferenceBrowser.puml)
+
+<details>
+<summary>UML exported by PUML</summary> 
+
 ![UML](./uml/ReferenceBrowser.png)
+</details>
+
 
 ## What I learnt from this project
 
@@ -54,3 +66,21 @@
 - How to transit Pages
 - How to work with SQLite
 - How to handle Socket Communication
+- How to store the user settings by using Preferences
+
+
+### User settings
+
+When App have any state to be managed for users (ex., Dark/Light mode), there is a way to store such user settings via Preferences class.
+
+Get
+``` csharp
+// Store app state
+Preferences.Default.Set("Primary", e.Value);
+```
+
+Set
+``` csharp
+// Restore app state
+PrimarySwitch.IsToggled = Preferences.Default.Get<bool>("Primary", false);
+``` 
