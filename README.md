@@ -73,13 +73,13 @@
 
 When App have any state to be managed for users (ex., Dark/Light mode), there is a way to store such user settings via Preferences class.
 
-Get
+Set
 ``` csharp
 // Store app state
 Preferences.Default.Set("Primary", e.Value);
 ```
 
-Set
+Get
 ``` csharp
 // Restore app state
 PrimarySwitch.IsToggled = Preferences.Default.Get<bool>("Primary", false);
