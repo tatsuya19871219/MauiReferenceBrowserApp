@@ -58,7 +58,7 @@ class SearchItemDatabase
     + ClearDatabaseAsync() : bool
 }
 
-SearchItemDatabase <|-- ReferenceSearchItemDatabase
+SearchItemDatabase <|- ReferenceSearchItemDatabase
 class ReferenceSearchItemDatabase
 {
     - referenceSite : ReferenceSite
@@ -99,7 +99,7 @@ class SearchItemInfosViewModel
 }
 
 
-ReferenceSearchItemDatabase <-- WebViewModel
+ReferenceSearchItemDatabase <- WebViewModel
 SearchHistory <-- WebViewModel
 ReferenceSite <-- WebViewModel
 class WebViewModel 
